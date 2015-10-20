@@ -1,3 +1,4 @@
+# U4O9 domains in a UO2 matrix
 # This example calculates the effective thermal conductivity across a microstructure
 # with circular second phase precipitates. Two methods are used to calculate the effective thermal conductivity,
 # the direct method that applies a temperature to one side and a heat flux to the other,
