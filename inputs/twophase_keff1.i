@@ -22,14 +22,14 @@
 
 [Variables] #Adds variables needed for two ways of calculating effective thermal cond.
   [./T] #Temperature used for the direct calculation
-    initial_condition = 573
+    initial_condition = 200
   [../]
   [./Tx_AEH] #Temperature used for the x-component of the AEH solve
-    initial_condition = 573
+    initial_condition = 200
     scaling = 1.0e4 #Scales residual to improve convergence
   [../]
   [./Ty_AEH] #Temperature used for the y-component of the AEH solve
-    initial_condition = 573
+    initial_condition = 200
     scaling = 1.0e4  #Scales residual to improve convergence
   [../]
 []
@@ -44,7 +44,7 @@
     variable = phase2
     type = MultiSmoothCircleIC
     int_width = 0.3
-    numbub = 20
+    numbub = 32
     bubspac = 1.5
     radius = 0.5
     outvalue = 0
@@ -89,7 +89,7 @@
     type = PresetBC
     variable = T
     boundary = left
-    value = 573
+    value = 200
   [../]
   [./right_flux] #Set heat flux on the right side
     type = NeumannBC
@@ -100,13 +100,13 @@
   [./fix_x] #Fix Tx_AEH at a single point
     type = DirichletBC
     variable = Tx_AEH
-    value = 573
+    value = 200
     boundary = 100
   [../]
   [./fix_y] #Fix Ty_AEH at a single point
     type = DirichletBC
     variable = Ty_AEH
-    value = 573
+    value = 200
     boundary = 100
   [../]
 []
@@ -138,7 +138,7 @@
     variable = T
     flux = 5e-6
     length_scale = 1e-06
-    T_hot = 573
+    T_hot = 200
     dx = 10
     boundary = right
   [../]
