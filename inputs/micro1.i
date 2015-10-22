@@ -40,8 +40,8 @@
       x1 = 30.0
       y1 = 25.0
       radius = 4.0
-      invalue = 0.9
-      outvalue = 0.1
+      invalue = 1.0
+      outvalue = 0.0
       int_width = 2.0
     [../]
   [../]
@@ -119,7 +119,6 @@
     g_order = SIMPLE
   [../]
 
-  #Free energy for UO2
   [./free_energy_A]
     type = DerivativeParsedMaterial
     block = 0
@@ -129,8 +128,6 @@
     derivative_order = 2
     enable_jit = true
   [../]
-
-  #Free energy for U4O9
   [./free_energy_B]
     type = DerivativeParsedMaterial
     block = 0
@@ -141,15 +138,14 @@
     enable_jit = true
   [../]
 
-  # Total free energy F = h(eta)*Fb + (1-h(eta))*Fa
   [./free_energy]
     type = DerivativeTwoPhaseMaterial
     block = 0
-    f_name = F    # Name of the global free energy function (use this in the Parsed Function Kernels)
-    fa_name = Fa  # f_name of the phase A free energy function
-    fb_name = Fb  # f_name of the phase B free energy function
+    f_name = F
+    fa_name = Fa
+    fb_name = Fb
     args = 'c'
-    eta = eta     # # order parameter that switches between A and B phase
+    eta = eta
     derivative_order = 2
     outputs = exodus
     output_properties = 'F dF/dc dF/deta d^2F/dc^2 d^2F/dcdeta d^2F/deta^2'
@@ -175,7 +171,7 @@
   nl_rel_tol = 1.0e-11
 
   start_time = 0.0
-  num_steps = 1
+  num_steps = 100
   dt = 0.1
 []
 
