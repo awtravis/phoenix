@@ -37,11 +37,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.2
-    numbub = 2
+    numbub = 10
     bubspac = 1.5
-    radius = 3.5
+    radius = 2.5
     outvalue = 0.0
-    invalue = 0.25
+    invalue = 0.05
     block = 0
   [../]
   # UO2 = 0.0 and U4O9 = 1.0
@@ -49,9 +49,9 @@
     type = MultiSmoothCircleIC
     variable = eta
     int_width = 0.2
-    numbub = 2
+    numbub = 10
     bubspac = 1.5
-    radius = 3.5
+    radius = 2.5
     outvalue = 0
     invalue = 1.0
     block = 0
