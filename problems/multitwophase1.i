@@ -41,7 +41,7 @@
     bubspac = 1.5
     radius = 2.5
     outvalue = 0.0
-    invalue = 0.05
+    invalue = 0.18
     block = 0
   [../]
   # UO2 = 0.0 and U4O9 = 1.0
