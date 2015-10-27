@@ -1,4 +1,4 @@
-# Simple test microstructure for a U4O9 domain in a UO2 matrix
+# Simple test microstructure for multiple U4O9 domains in a UO2 matrix
 
 [Mesh]
   type = GeneratedMesh
@@ -34,25 +34,27 @@
 [ICs]
   # UO2 = 0.0 and U4O9 = 0.25
   [./concentrationIC]
-    type = SmoothCircleIC
+    type = MultiSmoothCircleIC
     variable = c
-    x1 = 10.0
-    y1 = 10.0
-    radius = 5.0
-    invalue = 0.50
-    outvalue = 0.0
     int_width = 0.1
+    numbub = 8
+    bubspac = 1.5
+    radius = 2.0
+    outvalue = 0.0
+    invalue = 0.25
+    block = 0
   [../]
   # UO2 = 0.0 and U4O9 = 1.0
   [./etaIC]
-    type = SmoothCircleIC
+    type = MultiSmoothCircleIC
     variable = eta
-    x1 = 10.0
-    y1 = 10.0
-    radius = 5.0
-    invalue = 1.0
-    outvalue = 0.0
     int_width = 0.1
+    numbub = 8
+    bubspac = 1.5
+    radius = 2.0
+    outvalue = 0
+    invalue = 1.0
+    block = 0
   [../]
 []
 
@@ -182,7 +184,7 @@
   nl_rel_tol = 1.0e-11
 
   start_time = 0.0
-  num_steps = 500
+  num_steps = 200
   dt = 0.1
 []
 
