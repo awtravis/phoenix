@@ -39,7 +39,7 @@
     x1 = 10.0
     y1 = 10.0
     radius = 5.0
-    invalue = 0.50
+    invalue = 0.35
     outvalue = 0.0
     int_width = 0.1
   [../]
@@ -182,7 +182,7 @@
   nl_rel_tol = 1.0e-11
 
   start_time = 0.0
-  num_steps = 500
+  num_steps = 450
   dt = 0.1
 []
 

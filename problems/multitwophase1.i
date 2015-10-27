@@ -36,10 +36,10 @@
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
-    int_width = 0.1
-    numbub = 8
+    int_width = 0.2
+    numbub = 2
     bubspac = 1.5
-    radius = 2.0
+    radius = 3.5
     outvalue = 0.0
     invalue = 0.25
     block = 0
@@ -48,10 +48,10 @@
   [./etaIC]
     type = MultiSmoothCircleIC
     variable = eta
-    int_width = 0.1
-    numbub = 8
+    int_width = 0.2
+    numbub = 2
     bubspac = 1.5
-    radius = 2.0
+    radius = 3.5
     outvalue = 0
     invalue = 1.0
     block = 0
@@ -184,7 +184,7 @@
   nl_rel_tol = 1.0e-11
 
   start_time = 0.0
-  num_steps = 200
+  num_steps = 500
   dt = 0.1
 []
 
