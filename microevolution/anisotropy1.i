@@ -1,5 +1,7 @@
-# Simple test microstructure for multiple U4O9 domains in a UO2 matrix
-# Initial test condition with c = 0.15
+# Anisotropy tests
+# Simple test microstructure for a U4O9 domain in a UO2 matrix
+# Starting concentration c = 0.15
+# Deeper energy well = 10
 
 [Mesh]
   type = GeneratedMesh
@@ -21,8 +23,7 @@
     order = FIRST
     family = LAGRANGE
   [../]
-  # Energy barrier
-  # Default value equal to 1
+  # Chemical potential
   [./w]
     order = FIRST
     family = LAGRANGE
@@ -37,27 +38,25 @@
 [ICs]
   # UO2 = 0.0 and U4O9 = 0.25
   [./concentrationIC]
-    type = MultiSmoothCircleIC
+    type = SmoothCircleIC
     variable = c
-    int_width = 0.1
-    numbub = 30
-    bubspac = 1.5
-    radius = 1.0
-    outvalue = 0.15
+    x1 = 10.0
+    y1 = 10.0
+    radius = 5.0
     invalue = 0.15
-    block = 0
+    outvalue = 0.15
+    int_width = 0.1
   [../]
   # UO2 = 0.0 and U4O9 = 1.0
   [./etaIC]
-    type = MultiSmoothCircleIC
+    type = SmoothCircleIC
     variable = eta
-    int_width = 0.1
-    numbub = 30
-    bubspac = 1.5
-    radius = 1.0
-    outvalue = 0
+    x1 = 10.0
+    y1 = 10.0
+    radius = 5.0
     invalue = 1.0
-    block = 0
+    outvalue = 0.0
+    int_width = 0.1
   [../]
 []
 
@@ -104,6 +103,13 @@
     variable = w
     v = c
   [../]
+
+  [./anisotropy]
+    type = CHInterfaceAniso
+    variable = c
+    kappa_name = kappa_c
+    mob_name = M
+  [../]
 []
 
 [Materials]
@@ -115,9 +121,9 @@
   [../]
   [./consts2]
     type = GenericConstantMaterial
+    block = 0
     prop_names  = 'M kappa_c'
     prop_values = '1 1'
-    block = 0
   [../]
 
   [./switching]
@@ -139,7 +145,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '100*(c^2)'
+    function = '(100*(c^2))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -149,7 +155,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '100*((0.25-c)^2)'
+    function = '(100)*((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -184,36 +190,15 @@
   l_tol = 1.0e-4
 
   nl_max_its = 10
-  nl_rel_tol = 1.0e-4
+  nl_rel_tol = 1.0e-6
 
   start_time = 0.0
-  num_steps = 20
-  dt = 0.001
-[]
+  num_steps = 200
 
-[./TimeStepper]
-  type = IterationAdaptiveDT
-  dt = 25 # Initial time step.  In this simulation it changes.
-  optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
-[../]
-
-[Adaptivity]
-  marker = error_frac
-  max_h_level = 3
-  [./Indicators]
-    [./temp_jump]
-      type = GradientJumpIndicator
-      variable = eta
-      scale_by_flux_faces = true
-    [../]
-  [../]
-  [./Markers]
-    [./error_frac]
-      type = ErrorFractionMarker
-      coarsen = 0.01
-      indicator = temp_jump
-      refine = 0.6
-    [../]
+  [./TimeStepper]
+    type = IterationAdaptiveDT
+    dt = .001 # Initial time step.  In this simulation it changes.
+    optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
 []
 

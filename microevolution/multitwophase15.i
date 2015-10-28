@@ -43,8 +43,8 @@
     numbub = 30
     bubspac = 1.5
     radius = 1.0
-    outvalue = 0.15
-    invalue = 0.15
+    outvalue = 0.10
+    invalue = 0.10
     block = 0
   [../]
   # UO2 = 0.0 and U4O9 = 1.0
@@ -187,33 +187,12 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 20
-  dt = 0.001
-[]
+  num_steps = 175
 
-[./TimeStepper]
+  [./TimeStepper]
   type = IterationAdaptiveDT
-  dt = 25 # Initial time step.  In this simulation it changes.
+  dt = .001 # Initial time step.  In this simulation it changes.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
-[../]
-
-[Adaptivity]
-  marker = error_frac
-  max_h_level = 3
-  [./Indicators]
-    [./temp_jump]
-      type = GradientJumpIndicator
-      variable = eta
-      scale_by_flux_faces = true
-    [../]
-  [../]
-  [./Markers]
-    [./error_frac]
-      type = ErrorFractionMarker
-      coarsen = 0.01
-      indicator = temp_jump
-      refine = 0.6
-    [../]
   [../]
 []
 
