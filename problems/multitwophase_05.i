@@ -1,4 +1,5 @@
 # Simple test microstructure for multiple U4O9 domains in a UO2 matrix
+# Initial test condition with c = 0.05
 
 [Mesh]
   type = GeneratedMesh
@@ -20,6 +21,7 @@
     family = LAGRANGE
   [../]
   # Energy barrier
+  # Default value equal to 1
   [./w]
     order = FIRST
     family = LAGRANGE
@@ -41,7 +43,7 @@
     bubspac = 1.5
     radius = 2.5
     outvalue = 0.0
-    invalue = 0.18
+    invalue = 0.05
     block = 0
   [../]
   # UO2 = 0.0 and U4O9 = 1.0
@@ -184,7 +186,7 @@
   nl_rel_tol = 1.0e-11
 
   start_time = 0.0
-  num_steps = 500
+  num_steps = 150
   dt = 0.1
 []
 
