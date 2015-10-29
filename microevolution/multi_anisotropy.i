@@ -52,7 +52,7 @@
     type = MultiSmoothCircleIC
     variable = eta
     int_width = 0.1
-    numbub = 30
+    numbub = 20
     bubspac = 1.5
     radius = 1.0
     outvalue = 0
@@ -95,10 +95,17 @@
     args = 'eta'
   [../]
   [./w_res]
-    type = SplitCHWRes
+    type = SplitCHWResAniso
     variable = w
-    mob_name = M
+    mob_name = D
   [../]
+  [./anisotropic]
+    type = CHInterfaceAniso
+    variable = c
+    kappa_name = kappa_c
+    mob_name = D
+  [../]
+
   [./time]
     type = CoupledTimeDerivative
     variable = w
@@ -107,17 +114,27 @@
 []
 
 [Materials]
-  [./consts]
+  [./AHconsts]
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L kappa_eta'
     prop_values = '1 1'
   [../]
-  [./consts2]
+  [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'M kappa_c'
     prop_values = '1 1'
     block = 0
+  [../]
+
+  [./aniso_mobility]
+    type = ConstantAnisotropicMobility
+    block = 0
+    variable = c
+    M_name = D
+    tensor = '0 0 0
+              0 1 0
+              0 0 0'
   [../]
 
   [./switching]
@@ -187,7 +204,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 250
+  num_steps = 450
 
   [./TimeStepper]
   type = IterationAdaptiveDT

@@ -6,15 +6,15 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 100
-  ny = 100
+  nx = 25
+  ny = 25
   nz = 0
   xmin = 0
   xmax = 20
   ymin = 0
   ymax = 20
   elem_type = QUAD4
-  refine = 1
+  uniform_refine = 2
 []
 
 [Variables]
@@ -94,10 +94,17 @@
     args = 'eta'
   [../]
   [./w_res]
-    type = SplitCHWRes
+    type = SplitCHWResAniso
     variable = w
-    mob_name = M
+    mob_name = D
   [../]
+  [./anisotropic]
+    type = CHInterfaceAniso
+    variable = c
+    kappa_name = kappa_c
+    mob_name = D
+  [../]
+
   [./time]
     type = CoupledTimeDerivative
     variable = w
@@ -106,17 +113,27 @@
 []
 
 [Materials]
-  [./consts]
+  [./AHconsts]
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L kappa_eta'
     prop_values = '1 1'
   [../]
-  [./consts2]
+  [./CHconsts]
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'M kappa_c'
     prop_values = '1 1'
+  [../]
+
+  [./mob]
+    type = ConstantAnisotropicMobility
+    block = 0
+    variable = c
+    tensor = '1 0 0
+              0 0 0
+              0 0 0'
+    M_name = D
   [../]
 
   [./switching]
@@ -186,7 +203,7 @@
   nl_rel_tol = 1.0e-6
 
   start_time = 0.0
-  num_steps = 200
+  num_steps = 500
 
   [./TimeStepper]
     type = IterationAdaptiveDT
