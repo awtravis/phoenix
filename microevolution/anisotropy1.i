@@ -42,7 +42,7 @@
     variable = c
     x1 = 10.0
     y1 = 10.0
-    radius = 5.0
+    radius = 3.0
     invalue = 0.15
     outvalue = 0.15
     int_width = 0.1
@@ -53,7 +53,7 @@
     variable = eta
     x1 = 10.0
     y1 = 10.0
-    radius = 5.0
+    radius = 3.0
     invalue = 1.0
     outvalue = 0.0
     int_width = 0.1
@@ -102,13 +102,6 @@
     type = CoupledTimeDerivative
     variable = w
     v = c
-  [../]
-
-  [./anisotropy]
-    type = CHInterfaceAniso
-    variable = c
-    kappa_name = kappa_c
-    mob_name = M
   [../]
 []
 

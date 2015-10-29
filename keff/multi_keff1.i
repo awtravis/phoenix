@@ -14,6 +14,14 @@
   elem_type = QUAD4
 []
 
+[MeshModifiers] #Adds a new node set
+  [./new_nodeset]
+    type = AddExtraNodeset
+    coord = '5 5'
+    new_boundary = 100
+  [../]
+[]
+
 [Variables]
   # Oxygen concentration within the microstructure
   [./c]
@@ -31,6 +39,8 @@
     order = FIRST
     family = LAGRANGE
   [../]
+  [./T] #Temperature used for the direct calculation
+  [../]
 []
 
 [ICs]
@@ -39,11 +49,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 20
+    numbub = 30
     bubspac = 1.5
     radius = 1.0
-    outvalue = 0.20
-    invalue = 0.20
+    outvalue = 0.10
+    invalue = 0.10
     block = 0
   [../]
   # UO2 = 0.0 and U4O9 = 1.0
@@ -65,6 +75,18 @@
     [./All]
       auto_direction = 'x y'
     [../]
+  [../]
+  [./left_T] #Fix temperature on the left side
+    type = PresetBC
+    variable = T
+    boundary = left
+    value = 200
+  [../]
+  [./right_flux] #Set heat flux on the right side
+    type = NeumannBC
+    variable = T
+    boundary = right
+    value = 5e-6
   [../]
 []
 
@@ -102,6 +124,11 @@
     type = CoupledTimeDerivative
     variable = w
     v = c
+  [../]
+
+  [./HtCond] #Kernel for direct calculation of thermal cond
+    type = HeatConduction
+    variable = T
   [../]
 []
 
@@ -165,7 +192,32 @@
     outputs = exodus
     output_properties = 'F dF/dc dF/deta d^2F/dc^2 d^2F/dcdeta d^2F/deta^2'
   [../]
+
+  [./thcond] #The equation defining the thermal conductivity is defined here, using two ifs
+    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
+    type = ParsedMaterial
+    block = 0
+    constant_names = 'length_scale k_b k_p2 k_int'
+    constant_expressions = '1e-6 6.9 1.5 0.1'
+    function = 'sk_b:= length_scale*k_b; sk_p2:= length_scale*k_p2; sk_int:= k_int*length_scale; if(eta>0.1,if(eta>0.95,sk_b,sk_p2),sk_int)'
+    outputs = exodus
+    f_name = thermal_conductivity
+    args = eta
+  [../]
 []
+
+[Postprocessors]
+  [./k_x_direct] #Effective thermal conductivity from direct method
+    # This value is lower than the AEH value because it is impacted by second phase
+    # on the right boundary
+    type = ThermalCond
+    variable = T
+    flux = 5e-6
+    length_scale = 1e-06
+    T_hot = 200
+    dx = 10
+    boundary = right
+  [../]
 
 [Preconditioning]
   [./SMP]
@@ -186,7 +238,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 250
+  num_steps = 3
 
   [./TimeStepper]
   type = IterationAdaptiveDT
