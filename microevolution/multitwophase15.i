@@ -1,5 +1,5 @@
 # Simple test microstructure for multiple U4O9 domains in a UO2 matrix
-# Initial test condition with c = 0.15
+# Initial test condition with c = 0.10
 
 [Mesh]
   type = GeneratedMesh
@@ -12,7 +12,6 @@
   ymin = 0
   ymax = 20
   elem_type = QUAD4
-  refine = 1
 []
 
 [Variables]
@@ -187,7 +186,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 175
+  num_steps = 250
 
   [./TimeStepper]
   type = IterationAdaptiveDT
