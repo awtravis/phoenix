@@ -1,5 +1,5 @@
 # Simple test microstructure for multiple U4O9 domains in a UO2 matrix
-# Initial test condition with c = 0.104
+# Initial test condition with c = 0.10
 
 [Mesh]
   type = GeneratedMesh
@@ -41,7 +41,7 @@
     variable = c
     int_width = 0.1
     numbub = 25
-    bubspac = 2.0
+    bubspac = 1.5
     radius = 1.0
     outvalue = 0.104
     invalue = 0.104
@@ -53,7 +53,7 @@
     variable = eta
     int_width = 0.1
     numbub = 25
-    bubspac = 2.0
+    bubspac = 1.5
     radius = 1.0
     outvalue = 0
     invalue = 1.0
@@ -86,18 +86,24 @@
     kappa_name = kappa_eta
   [../]
 
-  [./cres]
-    type = CahnHilliardAniso
+  [./c_res]
+    type = SplitCHParsed
     variable = c
-    mob_name = M
     f_name = F
+    kappa_name = kappa_c
+    w = w
+    args = 'eta'
+  [../]
+  [./w_res]
+    type = SplitCHWResAniso
+    variable = w
+    mob_name = M
   [../]
   [./anisotropic]
     type = CHInterfaceAniso
     variable = c
     kappa_name = kappa_c
     mob_name = M
-    block = 0
   [../]
 
   [./time]
@@ -108,26 +114,25 @@
 []
 
 [Materials]
-  [./AHconsts]
+  [./consts]
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L kappa_eta'
     prop_values = '1 1'
   [../]
-  [[./consts2]
+  [./consts2]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '.0000000001'
+    prop_values = '.0001'
     block = 0
   [../]
 
   [./mobility]
     type = ConstantAnisotropicMobility
-    variable = c
     M_name = M
     block = 0
-    tensor = '1 0 0
-              0 1 0
+    tensor = '.1 0 0
+              0 0 0
               0 0 0'
   [../]
 
@@ -198,11 +203,11 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 500
+  num_steps = 300
 
   [./TimeStepper]
   type = IterationAdaptiveDT
-  dt = .001 # Initial time step.
+  dt = .001 # Initial time step.  In this simulation it changes.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
 []

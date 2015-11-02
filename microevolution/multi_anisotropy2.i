@@ -95,7 +95,7 @@
     args = 'eta'
   [../]
   [./w_res]
-    type = SplitCHWResAniso
+    type = SplitCHWRes
     variable = w
     mob_name = M
   [../]
@@ -122,19 +122,9 @@
   [../]
   [./CHconsts]
     type = GenericConstantMaterial
-    prop_names  = 'kappa_c'
-    prop_values = '1'
+    prop_names  = 'M kappa_c'
+    prop_values = '1 1'
     block = 0
-  [../]
-
-  [./aniso_mobility]
-    type = ConstantAnisotropicMobility
-    block = 0
-    variable = c
-    M_name = M
-    tensor = '.01  0   0
-              0    0   0
-              0    0   0'
   [../]
 
   [./switching]
