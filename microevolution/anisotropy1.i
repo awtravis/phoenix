@@ -130,7 +130,7 @@
     type = ConstantAnisotropicMobility
     block = 0
     variable = c
-    tensor = '1 0 0
+    tensor = '0.1 0 0
               0 0 0
               0 0 0'
     M_name = D
