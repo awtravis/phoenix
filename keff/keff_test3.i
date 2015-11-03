@@ -1,18 +1,27 @@
-# Simple test microstructure for multiple U4O9 domains in a UO2 matrix
-# Initial test condition with c = 0.104
+# Anisotropy tests
+# Simple test microstructure for a U4O9 domain in a UO2 matrix
+# Starting concentration c = 0.15
+# Deeper energy well = 10
 
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 25
-  ny = 25
+  nx = 100
+  ny = 100
   nz = 0
   xmin = 0
-  xmax = 50
+  xmax = 20
   ymin = 0
-  ymax = 50
+  ymax = 20
   elem_type = QUAD4
-  uniform_refine = 2
+[]
+
+[MeshModifiers] #Adds a new node set
+  [./new_nodeset]
+    type = AddExtraNodeset
+    coord = '5 5'
+    new_boundary = 100
+  [../]
 []
 
 [Variables]
@@ -21,8 +30,7 @@
     order = FIRST
     family = LAGRANGE
   [../]
-  # Energy barrier
-  # Default value equal to 1
+  # Chemical potential
   [./w]
     order = FIRST
     family = LAGRANGE
@@ -32,32 +40,33 @@
     order = FIRST
     family = LAGRANGE
   [../]
+  [./T] #Temperature used for the direct calculation
+    initial_condition = 800
+  [../]
 []
 
 [ICs]
   # UO2 = 0.0 and U4O9 = 0.25
   [./concentrationIC]
-    type = MultiSmoothCircleIC
+    type = SmoothCircleIC
     variable = c
+    x1 = 10.0
+    y1 = 10.0
+    radius = 3.0
+    invalue = 0.15
+    outvalue = 0.15
     int_width = 0.1
-    numbub = 50
-    bubspac = 2.0
-    radius = 1.0
-    outvalue = 0.143
-    invalue = 0.143
-    block = 0
   [../]
   # UO2 = 0.0 and U4O9 = 1.0
   [./etaIC]
-    type = MultiSmoothCircleIC
+    type = SmoothCircleIC
     variable = eta
-    int_width = 0.1
-    numbub = 50
-    bubspac = 2.0
-    radius = 1.0
-    outvalue = 0
+    x1 = 10.0
+    y1 = 10.0
+    radius = 3.0
     invalue = 1.0
-    block = 0
+    outvalue = 0.0
+    int_width = 0.1
   [../]
 []
 
@@ -66,6 +75,18 @@
     [./All]
       auto_direction = 'x y'
     [../]
+  [../]
+  [./left_T] #Fix temperature on the left side
+    type = PresetBC
+    variable = T
+    boundary = left
+    value = 800
+  [../]
+  [./right_flux] #Set heat flux on the right side
+    type = NeumannBC
+    variable = T
+    boundary = right
+    value = 5e-6
   [../]
 []
 
@@ -95,51 +116,34 @@
     args = 'eta'
   [../]
   [./w_res]
-    type = SplitCHWResAniso
+    type = SplitCHWRes
     variable = w
     mob_name = M
   [../]
-  [./anisotropy]
-    type = CHInterfaceAniso
-    variable = c
-    mob_name = M
-    kappa_name = kappa_c
-  [../]
-
   [./time]
     type = CoupledTimeDerivative
     variable = w
     v = c
   [../]
+
+  [./HtCond] #Kernel for direct calculation of thermal cond
+    type = HeatConduction
+    variable = T
+  [../]
 []
 
 [Materials]
-  [./AHconsts]
+  [./consts]
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L kappa_eta'
     prop_values = '1 1'
   [../]
-  [./CHconsts]
+  [./consts2]
     type = GenericConstantMaterial
-    prop_names  = 'kappa_c'
-    prop_values = '1'
     block = 0
-  [../]
-  [./aniso]
-    type = InterfaceOrientationMaterial
-    block = 0
-    c = c
-    M_name = M
-  [../]
-  [./mobility]
-    type = ConstantAnisotropicMobility
-    block = 0
-    variable = c
-    M_name = M
-    tensor = '1  .1  0
-              .1  1  0
-              0  0  0'
+    prop_names  = 'M kappa_c'
+    prop_values = '1 1'
   [../]
 
   [./switching]
@@ -161,7 +165,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '100*(c^2)'
+    function = '(100*(c^2))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -171,7 +175,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '100*((0.25-c)^2)'
+    function = '(100)*((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -187,6 +191,37 @@
     derivative_order = 2
     outputs = exodus
     output_properties = 'F dF/dc dF/deta d^2F/dc^2 d^2F/dcdeta d^2F/deta^2'
+  [../]
+
+  [./thcond] #The equation defining the thermal conductivity is defined here, using two ifs
+    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
+    type = ParsedMaterial
+    block = 0
+    constant_names = 'length_scale k_b k_p2 k_int'
+    constant_expressions = '20e-6 6.9 1.5 0.1'
+    function = 'sk_b:= length_scale*k_b; sk_p2:= length_scale*k_p2; sk_int:= k_int*length_scale; if(eta>0.1,if(eta>0.95,sk_p2,sk_int),sk_b)'
+    outputs = exodus
+    f_name = thermal_conductivity
+    args = eta
+  [../]
+[]
+
+[Postprocessors]
+  [./right_T]
+    type = SideAverageValue
+    variable = T
+    boundary = right
+  [../]
+  [./k_x_direct] #Effective thermal conductivity from direct method
+    # This value is lower than the AEH value because it is impacted by second phase
+    # on the right boundary
+    type = ThermalCond
+    variable = T
+    flux = 5e-6
+    length_scale = 1e-06
+    T_hot = 800
+    dx = 10
+    boundary = right
   [../]
 []
 
@@ -206,35 +241,15 @@
   l_tol = 1.0e-4
 
   nl_max_its = 10
-  nl_rel_tol = 1.0e-4
+  nl_rel_tol = 1.0e-6
 
   start_time = 0.0
-  num_steps = 500
+  num_steps = 3
 
   [./TimeStepper]
-  type = IterationAdaptiveDT
-  dt = .001 # Initial time step.
-  optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
-  [../]
-[]
-
-[Adaptivity]
-  marker = error_frac
-  max_h_level = 3
-  [./Indicators]
-    [./eta_jump]
-      type = GradientJumpIndicator
-      variable = eta
-      scale_by_flux_faces = true
-    [../]
-  [../]
-  [./Markers]
-    [./error_frac]
-      type = ErrorFractionMarker
-      coarsen = 0.01
-      indicator = eta_jump
-      refine = 0.6
-    [../]
+    type = IterationAdaptiveDT
+    dt = .001 # Initial time step.  In this simulation it changes.
+    optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
 []
 
