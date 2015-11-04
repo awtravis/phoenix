@@ -1,5 +1,5 @@
 # Microstructure for multiple U4O9 domains in a UO2 matrix
-# Initial test condition with c = 0.042
+# Initial test condition with c = 0.177
 
 [Mesh]
   type = GeneratedMesh
@@ -43,8 +43,8 @@
     numbub = 25
     bubspac = 2.0
     radius = 2.0
-    outvalue = 0.042
-    invalue = 0.042
+    outvalue = 0.177
+    invalue = 0.177
     block = 0
   [../]
   # UO2 = 0.0 and U4O9 = 1.0
@@ -137,7 +137,7 @@
     tensor = '.1  0  0
               0   0  0
               0   0  0'
-    M_name = M          
+    M_name = M
   [../]
 
   [./switching]
@@ -207,7 +207,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 500
+  num_steps = 750
 
   [./TimeStepper]
   type = IterationAdaptiveDT
