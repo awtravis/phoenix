@@ -1,5 +1,5 @@
-# Simple test microstructure for multiple U4O9 domains in a UO2 matrix
-# Initial test condition with c = 0.104
+# Microstructure for multiple U4O9 domains in a UO2 matrix
+# Initial test condition with c = 0.042
 
 [Mesh]
   type = GeneratedMesh
@@ -8,9 +8,9 @@
   ny = 25
   nz = 0
   xmin = 0
-  xmax = 50
+  xmax = 25
   ymin = 0
-  ymax = 50
+  ymax = 25
   elem_type = QUAD4
   uniform_refine = 2
 []
@@ -40,7 +40,7 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 50
+    numbub = 25
     bubspac = 2.0
     radius = 2.0
     outvalue = 0.042
@@ -52,7 +52,7 @@
     type = MultiSmoothCircleIC
     variable = eta
     int_width = 0.1
-    numbub = 50
+    numbub = 25
     bubspac = 2.0
     radius = 2.0
     outvalue = 0
@@ -123,23 +123,21 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '1'
+    prop_values = '2.0'
     block = 0
   [../]
   [./aniso]
     type = InterfaceOrientationMaterial
     block = 0
     c = c
-    M_name = M
   [../]
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    variable = c
-    M_name = M
     tensor = '.1  0  0
               0   0  0
               0   0  0'
+    M_name = M          
   [../]
 
   [./switching]
