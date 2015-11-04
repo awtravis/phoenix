@@ -43,8 +43,8 @@
     numbub = 50
     bubspac = 2.0
     radius = 1.0
-    outvalue = 0.143
-    invalue = 0.143
+    outvalue = 0.042
+    invalue = 0.042
     block = 0
   [../]
   # UO2 = 0.0 and U4O9 = 1.0
@@ -123,7 +123,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '1'
+    prop_values = '3333'
     block = 0
   [../]
   [./aniso]
@@ -137,8 +137,8 @@
     block = 0
     variable = c
     M_name = M
-    tensor = '1  .1  0
-              .1  1  0
+    tensor = '1  0  0
+              0  1  0
               0  0  0'
   [../]
 
