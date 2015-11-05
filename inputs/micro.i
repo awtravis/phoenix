@@ -140,8 +140,8 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '1  1  0
-              1  1  0
+    tensor = '.1  0  0
+              0  .1  0
               0  0  0'
     M_name = M
   [../]
@@ -205,8 +205,8 @@
     type = ThermalCond
     variable = T
     T_hot = 473
-    flux = 0.5
-    dx = .00002
+    flux = 5e-6
+    dx = 20
     boundary = right
     length_scale = 1
   [../]
