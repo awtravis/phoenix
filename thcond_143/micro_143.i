@@ -1,5 +1,5 @@
 # Microstructure for multiple U4O9 domains in a UO2 matrix
-# Initial test condition with c = 0.042
+# Initial test condition with c = 0.143
 
 [Mesh]
   type = GeneratedMesh
@@ -32,10 +32,6 @@
     order = FIRST
     family = LAGRANGE
   [../]
-
-  [./T]
-    initial_condition = 473
-  [../]
 []
 
 [ICs]
@@ -44,11 +40,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 25
+    numbub = 40
     bubspac = 2.0
-    radius = 2.0
-    outvalue = 0.042
-    invalue = 0.042
+    radius = 1.0
+    outvalue = 0.143
+    invalue = 0.143
     block = 0
   [../]
   # UO2 = 0.0 and U4O9 = 1.0
@@ -56,9 +52,9 @@
     type = MultiSmoothCircleIC
     variable = eta
     int_width = 0.1
-    numbub = 25
+    numbub = 40
     bubspac = 2.0
-    radius = 2.0
+    radius = 1.0
     outvalue = 0
     invalue = 1.0
     block = 0
@@ -71,27 +67,9 @@
       auto_direction = 'x y'
     [../]
   [../]
-  [./left_T] #Fix temperature on the left side
-    type = PresetBC
-    variable = T
-    boundary = left
-    value = 473
-  [../]
-  [./right_flux] #Set heat flux on the right side
-    type = NeumannBC
-    variable = T
-    boundary = right
-    value = 5e-6
-  [../]
 []
 
 [Kernels]
-
-  [./HtCond] #Kernel for direct calculation of thermal cond
-    type = HeatConduction
-    variable = T
-  [../]
-
   [./detadt]
     type = TimeDerivative
     variable = eta
@@ -145,7 +123,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '2.0'
+    prop_values = '0.05'
     block = 0
   [../]
   [./aniso]
@@ -156,9 +134,9 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '.1  0  0
-              0   0  0
-              0   0  0'
+    tensor = '1  1  0
+              1  1  0
+              0  0  0'
     M_name = M
   [../]
 
@@ -208,36 +186,7 @@
     outputs = exodus
     output_properties = 'F dF/dc dF/deta d^2F/dc^2 d^2F/dcdeta d^2F/deta^2'
   [../]
-
-  [./thcond]
-    type = ParsedMaterial
-    block = 0
-    constant_names = 'k_b k_p2'
-    constant_expressions = '6.9 1.5'
-    function = 'k0:= (((0.25 - c)^2)*k_b) - ((c^2)*k_p2)'
-    outputs = exodus
-    f_name = thermal_conductivity
-    args = c
-  [../]
 []
-
-[Postprocessors]
-  [./right_T]
-    type = SideAverageValue
-    variable = T
-    boundary = right
-  [../]
-  [./k_x_direct] #Effective thermal conductivity from direct method
-    # This value is lower than the AEH value because it is impacted by second phase
-    # on the right boundary
-    type = ThermalCond
-    variable = T
-    flux = 5e-6
-    length_scale = 1e-06
-    T_hot = 800
-    dx = 10
-    boundary = right
-  [../]
 
 [Preconditioning]
   [./SMP]
@@ -258,7 +207,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 10
+  num_steps = 700
 
   [./TimeStepper]
   type = IterationAdaptiveDT
@@ -288,6 +237,5 @@
 []
 
 [Outputs]
-  execute_on = 'timestep_end'
   exodus = true
 []

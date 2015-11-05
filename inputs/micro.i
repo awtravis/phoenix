@@ -1,93 +1,57 @@
-# Microstructure for multiple U4O9 domains in a UO2 matrix
-# Initial test condition with c = 0.042
-
 [Mesh]
   type = GeneratedMesh
   dim = 2
   nx = 25
   ny = 25
-  nz = 0
-  xmin = 0
-  xmax = 25
-  ymin = 0
-  ymax = 25
-  elem_type = QUAD4
+  ymax = 20
+  xmax = 20
   uniform_refine = 2
 []
 
-[Variables]
-  # Oxygen concentration within the microstructure
-  [./c]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  # Energy barrier
-  # Default value equal to 1
-  [./w]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  # Phase field variable
-  [./eta]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-
-  [./T]
-    initial_condition = 473
-  [../]
-[]
-
 [ICs]
-  # UO2 = 0.0 and U4O9 = 0.25
+  [./etaIC]
+    type = MultiSmoothCircleIC
+    numbub = 40
+    int_width = 0.1
+    bubspac = 2.0
+    radius = 1.0
+    outvalue = 0 # UO2
+    variable = eta
+    invalue = 1 #U4O9
+  [../]
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 25
+    numbub = 40
     bubspac = 2.0
-    radius = 2.0
-    outvalue = 0.042
-    invalue = 0.042
-    block = 0
-  [../]
-  # UO2 = 0.0 and U4O9 = 1.0
-  [./etaIC]
-    type = MultiSmoothCircleIC
-    variable = eta
-    int_width = 0.1
-    numbub = 25
-    bubspac = 2.0
-    radius = 2.0
-    outvalue = 0
-    invalue = 1.0
+    radius = 1.0
+    outvalue = 0.143
+    invalue = 0.143
     block = 0
   [../]
 []
 
-[BCs]
-  [./Periodic]
-    [./All]
-      auto_direction = 'x y'
-    [../]
+[Variables]
+  [./T]
+    initial_condition = 473
   [../]
-  [./left_T] #Fix temperature on the left side
-    type = PresetBC
-    variable = T
-    boundary = left
-    value = 473
+  [./eta]
+    order = FIRST
+    family = LAGRANGE
   [../]
-  [./right_flux] #Set heat flux on the right side
-    type = NeumannBC
-    variable = T
-    boundary = right
-    value = 5e-6
+  [./c]
+    order = FIRST
+    family = LAGRANGE
+  [../]
+  [./w]
+    order = FIRST
+    family = LAGRANGE
   [../]
 []
 
 [Kernels]
-
-  [./HtCond] #Kernel for direct calculation of thermal cond
+  [./heat_conduction]
     type = HeatConduction
     variable = T
   [../]
@@ -135,6 +99,26 @@
   [../]
 []
 
+[BCs]
+  [./Periodic]
+    [./All]
+      auto_direction = 'x y'
+    [../]
+  [../]
+  [./left_T] #Fix temperature on the left side
+    type = PresetBC
+    variable = T
+    boundary = left
+    value = 473
+  [../]
+  [./right_flux] #Set heat flux on the right side
+    type = NeumannBC
+    variable = T
+    boundary = right
+    value = 5e-6
+  [../]
+[]
+
 [Materials]
   [./AHconsts]
     type = GenericConstantMaterial
@@ -145,7 +129,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '2.0'
+    prop_values = '0.05'
     block = 0
   [../]
   [./aniso]
@@ -156,9 +140,9 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '.1  0  0
-              0   0  0
-              0   0  0'
+    tensor = '1  1  0
+              1  1  0
+              0  0  0'
     M_name = M
   [../]
 
@@ -173,6 +157,12 @@
     block = 0
     eta = eta
     g_order = SIMPLE
+  [../]
+
+  [./column]
+    type = Micro
+    block = 0
+    phase = eta
   [../]
 
   # Free energy of UO2 matrix
@@ -208,36 +198,24 @@
     outputs = exodus
     output_properties = 'F dF/dc dF/deta d^2F/dc^2 d^2F/dcdeta d^2F/deta^2'
   [../]
-
-  [./thcond]
-    type = ParsedMaterial
-    block = 0
-    constant_names = 'k_b k_p2'
-    constant_expressions = '6.9 1.5'
-    function = 'k0:= (((0.25 - c)^2)*k_b) - ((c^2)*k_p2)'
-    outputs = exodus
-    f_name = thermal_conductivity
-    args = c
-  [../]
 []
 
 [Postprocessors]
+  [./k_eff]
+    type = ThermalCond
+    variable = T
+    T_hot = 473
+    flux = 0.5
+    dx = .00002
+    boundary = right
+    length_scale = 1
+  [../]
   [./right_T]
     type = SideAverageValue
     variable = T
     boundary = right
   [../]
-  [./k_x_direct] #Effective thermal conductivity from direct method
-    # This value is lower than the AEH value because it is impacted by second phase
-    # on the right boundary
-    type = ThermalCond
-    variable = T
-    flux = 5e-6
-    length_scale = 1e-06
-    T_hot = 800
-    dx = 10
-    boundary = right
-  [../]
+[]
 
 [Preconditioning]
   [./SMP]
@@ -258,7 +236,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 10
+  num_steps = 500
 
   [./TimeStepper]
   type = IterationAdaptiveDT
@@ -288,6 +266,7 @@
 []
 
 [Outputs]
-  execute_on = 'timestep_end'
+  execute_on = 'initial timestep_end'
   exodus = true
+  csv = true
 []

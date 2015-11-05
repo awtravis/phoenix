@@ -1,48 +1,66 @@
-# Microstructure evolution
-# Test microstructure with simple equations
+# Microstructure for multiple U4O9 domains in a UO2 matrix
+# Initial test condition with c = 0.042
 
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 14
-  ny = 10
+  nx = 25
+  ny = 25
   nz = 0
-  xmin = 10
-  xmax = 40
-  ymin = 15
-  ymax = 35
+  xmin = 0
+  xmax = 25
+  ymin = 0
+  ymax = 25
   elem_type = QUAD4
+  uniform_refine = 2
 []
 
 [Variables]
+  # Oxygen concentration within the microstructure
   [./c]
     order = FIRST
     family = LAGRANGE
-    [./InitialCondition]
-      type = SmoothCircleIC
-      x1 = 25.0
-      y1 = 25.0
-      radius = 6.0
-      invalue = 0.9
-      outvalue = 0.1
-      int_width = 3.0
-    [../]
   [../]
+  # Energy barrier
+  # Default value equal to 1
   [./w]
     order = FIRST
     family = LAGRANGE
   [../]
+  # Phase field variable
   [./eta]
     order = FIRST
     family = LAGRANGE
-    [./InitialCondition]
-      type = SmoothCircleIC
-      x1 = 30.0
-      y1 = 25.0
-      radius = 4.0
-      invalue = 1.0
-      outvalue = 0.0
-      int_width = 2.0
+  [../]
+[]
+
+[ICs]
+  # UO2 = 0.0 and U4O9 = 0.25
+  [./concentrationIC]
+    type = RandomIC
+    variable = c
+    min = 0.0
+    max = 0.25
+    block = 0
+  [../]
+  # UO2 = 0.0 and U4O9 = 1.0
+  [./etaIC]
+    type = MultiSmoothCircleIC
+    variable = eta
+    int_width = 0.1
+    numbub = 25
+    bubspac = 2.0
+    radius = 2.0
+    outvalue = 0
+    invalue = 1.0
+    block = 0
+  [../]
+[]
+
+[BCs]
+  [./Periodic]
+    [./All]
+      auto_direction = 'x y'
     [../]
   [../]
 []
@@ -73,10 +91,17 @@
     args = 'eta'
   [../]
   [./w_res]
-    type = SplitCHWRes
+    type = SplitCHWResAniso
     variable = w
     mob_name = M
   [../]
+  [./anisotropy]
+    type = CHInterfaceAniso
+    variable = c
+    mob_name = M
+    kappa_name = kappa_c
+  [../]
+
   [./time]
     type = CoupledTimeDerivative
     variable = w
@@ -84,33 +109,38 @@
   [../]
 []
 
-[BCs]
-  [./Periodic]
-    [./All]
-      auto_direction = 'x y'
-    [../]
-  [../]
-[]
-
 [Materials]
-  [./consts]
+  [./AHconsts]
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L kappa_eta'
-    prop_values = '1 1        '
-  [../]
-  [./consts2]
-    type = GenericConstantMaterial
-    prop_names  = 'M kappa_c'
     prop_values = '1 1'
+  [../]
+  [./CHconsts]
+    type = GenericConstantMaterial
+    prop_names  = 'kappa_c'
+    prop_values = '0.5'
     block = 0
+  [../]
+  [./aniso]
+    type = InterfaceOrientationMaterial
+    block = 0
+    c = c
+  [../]
+  [./mobility]
+    type = ConstantAnisotropicMobility
+    block = 0
+    tensor = '1  0  0
+              0  1  0
+              0  0  0'
+    M_name = M
   [../]
 
   [./switching]
     type = SwitchingFunctionMaterial
     block = 0
     eta = eta
-    h_order = SIMPLE
+    h_order = HIGH
   [../]
   [./barrier]
     type = BarrierFunctionMaterial
@@ -119,21 +149,23 @@
     g_order = SIMPLE
   [../]
 
+  # Free energy of UO2 matrix
   [./free_energy_A]
     type = DerivativeParsedMaterial
     block = 0
     f_name = Fa
     args = 'c'
-    function = '(c-0.1)^2*(c-1)^2 + c*0.01'
+    function = '100*(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]
+  # Free energy of U4O9 domain
   [./free_energy_B]
     type = DerivativeParsedMaterial
     block = 0
     f_name = Fb
     args = 'c'
-    function = 'c^2*(c-0.9)^2 + (1-c)*0.01'
+    function = '100*((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -168,11 +200,36 @@
   l_tol = 1.0e-4
 
   nl_max_its = 10
-  nl_rel_tol = 1.0e-11
+  nl_rel_tol = 1.0e-4
 
   start_time = 0.0
   num_steps = 100
-  dt = 0.1
+
+  [./TimeStepper]
+  type = IterationAdaptiveDT
+  dt = .001 # Initial time step.
+  optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
+  [../]
+[]
+
+[Adaptivity]
+  marker = error_frac
+  max_h_level = 3
+  [./Indicators]
+    [./eta_jump]
+      type = GradientJumpIndicator
+      variable = eta
+      scale_by_flux_faces = true
+    [../]
+  [../]
+  [./Markers]
+    [./error_frac]
+      type = ErrorFractionMarker
+      coarsen = 0.01
+      indicator = eta_jump
+      refine = 0.6
+    [../]
+  [../]
 []
 
 [Outputs]

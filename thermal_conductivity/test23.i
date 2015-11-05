@@ -1,4 +1,3 @@
-# U4O9 domains in a UO2 matrix
 # This example calculates the effective thermal conductivity across a microstructure
 # with circular second phase precipitates. Two methods are used to calculate the effective thermal conductivity,
 # the direct method that applies a temperature to one side and a heat flux to the other,
@@ -22,14 +21,14 @@
 
 [Variables] #Adds variables needed for two ways of calculating effective thermal cond.
   [./T] #Temperature used for the direct calculation
-    initial_condition = 573
+    initial_condition = 800
   [../]
   [./Tx_AEH] #Temperature used for the x-component of the AEH solve
-    initial_condition = 573
+    initial_condition = 800
     scaling = 1.0e4 #Scales residual to improve convergence
   [../]
   [./Ty_AEH] #Temperature used for the y-component of the AEH solve
-    initial_condition = 573
+    initial_condition = 800
     scaling = 1.0e4  #Scales residual to improve convergence
   [../]
 []
@@ -56,6 +55,10 @@
 [Kernels]
   [./HtCond] #Kernel for direct calculation of thermal cond
     type = HeatConduction
+    variable = T
+  [../]
+  [./heat_conduction_time_derivative]
+    type = HeatConductionTimeDerivative
     variable = T
   [../]
   [./heat_x] #All other kernels are for AEH approach to calculate thermal cond.
@@ -89,7 +92,7 @@
     type = PresetBC
     variable = T
     boundary = left
-    value = 573
+    value = 800
   [../]
   [./right_flux] #Set heat flux on the right side
     type = NeumannBC
@@ -100,28 +103,23 @@
   [./fix_x] #Fix Tx_AEH at a single point
     type = DirichletBC
     variable = Tx_AEH
-    value = 573
+    value = 800
     boundary = 100
   [../]
   [./fix_y] #Fix Ty_AEH at a single point
     type = DirichletBC
     variable = Ty_AEH
-    value = 573
+    value = 800
     boundary = 100
   [../]
 []
 
 [Materials]
-  [./thcond] #The equation defining the thermal conductivity is defined here, using two ifs
-    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
-    type = ParsedMaterial
+  [./steel]
+    type = GenericConstantMaterial
     block = 0
-    constant_names = 'length_scale k_b k_p2 k_int'
-    constant_expressions = '1e-6 5.999 1.500 0.1'
-    function = 'sk_b:= length_scale*k_b; sk_p2:= length_scale*k_p2; sk_int:= k_int*length_scale; if(phase2>0.1,if(phase2>0.95,sk_p2,sk_int),sk_b)'
-    outputs = exodus
-    f_name = thermal_conductivity
-    args = phase2
+    prop_names = 'thermal_conductivity specific_heat density'
+    prop_values = '18 0.466 8000' # W/m*K, J/kg-K, kg/m^3 @ 296K
   [../]
 []
 
@@ -138,7 +136,7 @@
     variable = T
     flux = 5e-6
     length_scale = 1e-06
-    T_hot = 573
+    T_hot = 800
     dx = 10
     boundary = right
   [../]
@@ -169,12 +167,24 @@
 []
 
 [Executioner]
-  type = Steady
+  type = Transient
+  scheme = 'bdf2'
+  solve_type = 'NEWTON'
+
   l_max_its = 15
-  solve_type = NEWTON
-  petsc_options_iname = '-pc_type -pc_hypre_type -ksp_gmres_restart -pc_hypre_boomeramg_strong_threshold'
-  petsc_options_value = 'hypre boomeramg 31 0.7'
-  l_tol = 1e-04
+  l_tol = 1.0e-4
+
+  nl_max_its = 10
+  nl_rel_tol = 1.0e-4
+
+  start_time = 0.0
+  num_steps = 10
+
+  [./TimeStepper]
+  type = IterationAdaptiveDT
+  dt = .001 # Initial time step.
+  optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
+  [../]
 []
 
 [Outputs]

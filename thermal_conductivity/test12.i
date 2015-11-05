@@ -1,13 +1,10 @@
-[Mesh]
+[Mesh] #Sets mesh size to 10 microns by 10 microns
   type = GeneratedMesh
   dim = 2
   nx = 100
   ny = 100
-  nz = 0
-  xmin = 0
-  xmax = 20
-  ymin = 0
-  ymax = 20
+  xmax = 10
+  ymax = 10
   elem_type = QUAD4
 []
 
@@ -16,14 +13,13 @@
     order = FIRST
     family = LAGRANGE
     [./InitialCondition]
-      type = MultiSmoothCircleIC
-      int_width = 0.3
-      numbub = 20
-      bubspac = 1.5
-      radius = 0.5
-      outvalue = 0
-      invalue = 1
-      block = 0
+      type = SmoothCircleIC
+      x1 = 25.0
+      y1 = 25.0
+      radius = 6.0
+      invalue = 0.9
+      outvalue = 0.1
+      int_width = 3.0
     [../]
   [../]
   [./w]
@@ -34,29 +30,14 @@
     order = FIRST
     family = LAGRANGE
     [./InitialCondition]
-      type = MultiSmoothCircleIC
-      int_width = 0.3
-      numbub = 20
-      bubspac = 1.5
-      radius = 0.5
-      outvalue = 0
-      invalue = 1
-      block = 0
+      type = SmoothCircleIC
+      x1 = 30.0
+      y1 = 25.0
+      radius = 4.0
+      invalue = 0.9
+      outvalue = 0.1
+      int_width = 2.0
     [../]
-  [../]
-  [./T]
-    initial_condition = 0.0
-  [../]
-[]
-
-[AuxVariables]
-  [./local_energy]
-    order = CONSTANT
-    family = MONOMIAL
-  [../]
-  [./m]
-    order = CONSTANT
-    family = MONOMIAL
   [../]
 []
 
@@ -71,28 +52,10 @@
     args = c
     f_name = F
   [../]
-
   [./ACInterface]
     type = ACInterface
     variable = eta
     kappa_name = kappa_eta
-  [../]
-  [./anisoACinterface1]
-    type = ACInterfaceKobayashi1
-    variable = eta
-    mob_name = M
-  [../]
-  [./anisoACinterface2]
-    type = ACInterfaceKobayashi2
-    variable = eta
-    mob_name = M
-  [../]
-  [./ACParsed]
-    type = ACParsed
-    variable = eta
-    mob_name = M
-    f_name = fbulk
-    args = m
   [../]
 
   [./c_res]
@@ -112,33 +75,6 @@
     type = CoupledTimeDerivative
     variable = w
     v = c
-  [../]
-
-  [./T_dot]
-    type = TimeDerivative
-    variable = T
-  [../]
-  [./CoefDiffusion]
-    type = Diffusion
-    variable = T
-  [../]
-  [./w_dot_T]
-    type = CoefCoupledTimeDerivative
-    variable = T
-    v = w
-    coef = -1.8
-  [../]
-[]
-
-[AuxKernels]
-  [./m]
-    type = ParsedAux
-    variable = m
-    args = T
-    constant_names = pi
-    constant_expressions = 3.14159265359
-    function = '0.9*atan(10*(1-T))/pi'
-    execute_on = timestep_end
   [../]
 []
 
@@ -208,12 +144,6 @@
     outputs = exodus
     output_properties = 'F dF/dc dF/deta d^2F/dc^2 d^2F/dcdeta d^2F/deta^2'
   [../]
-
-  [./material]
-    type = InterfaceOrientationMaterial
-    block = 0
-    c = eta
-  [../]
 []
 
 [Preconditioning]
@@ -232,10 +162,10 @@
   l_tol = 1.0e-4
 
   nl_max_its = 10
-  nl_rel_tol = 1.0e-11
+  nl_rel_tol = 1.0e-5
 
   start_time = 0.0
-  num_steps = 100
+  num_steps = 10
   dt = 0.1
 []
 
