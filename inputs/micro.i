@@ -130,7 +130,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '2.0'
+    prop_values = '1e-10'
     block = 0
   [../]
   [./aniso]
