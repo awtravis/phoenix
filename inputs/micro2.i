@@ -26,8 +26,8 @@
     numbub = 25
     bubspac = 1.0
     radius = 0.5
-    outvalue = 0.143
-    invalue = 0.143
+    outvalue = 0.0
+    invalue = 0.0
     block = 0
   [../]
 []
@@ -130,7 +130,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '2.0'
+    prop_values = '1e-5'
     block = 0
   [../]
   [./aniso]

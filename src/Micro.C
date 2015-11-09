@@ -55,7 +55,7 @@ Micro::computeQpProperties()
     else
       // We're assuming close packing  so the porosity will be 1 - 0.74048 = 0.25952
       // ( http://en.wikipedia.org/wiki/Close-packing_of_equal_spheres )
-      _concentration[_qp] = 0.5;
+      _concentration[_qp] = _phase[_qp];
 
   // We will compute a "bulk" thermal conductivity, specific heat and density
   // as a linear combination of the UO2 and U4O9
@@ -71,7 +71,7 @@ Micro::computeQpProperties()
   if (_use_variable_conductivity)
     _thermal_conductivity[_qp] = _conductivity_variable[_qp];
   else
-    _thermal_conductivity[_qp] = (1-_concentration[_qp])*UO2_k + (_concentration[_qp])*U4O9_k;
+    _thermal_conductivity[_qp] = (1-(_concentration[_qp]*_concentration[_qp]))*UO2_k + (_concentration[_qp]*_concentration[_qp])*U4O9_k;
   _density[_qp] = (1-_concentration[_qp])*UO2_rho + _concentration[_qp]*U4O9_rho;
   _heat_capacity[_qp] = (1-_concentration[_qp])*UO2_cp*UO2_rho + _concentration[_qp]*U4O9_cp*U4O9_rho;
 }

@@ -3,18 +3,18 @@
   dim = 2
   nx = 25
   ny = 25
-  ymax = 10
-  xmax = 10
+  ymax = 20
+  xmax = 20
   uniform_refine = 2
 []
 
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 25
-    int_width = 0.01
-    bubspac = 1.0
-    radius = 0.5
+    numbub = 40
+    int_width = 0.1
+    bubspac = 2.0
+    radius = 1.0
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
@@ -22,21 +22,19 @@
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
-    int_width = 0.01
-    numbub = 25
-    bubspac = 1.0
-    radius = 0.5
-    outvalue = 0.143
-    invalue = 0.143
+    int_width = 0.1
+    numbub = 40
+    bubspac = 2.0
+    radius = 1.0
+    outvalue = 0.160
+    invalue = 0.160
     block = 0
   [../]
 []
 
 [Variables]
   [./T]
-    initial_condition = 473
   [../]
-
   [./eta]
     order = FIRST
     family = LAGRANGE
@@ -82,15 +80,9 @@
     args = 'eta'
   [../]
   [./w_res]
-    type = SplitCHWResAniso
+    type = SplitCHWRes
     variable = w
     mob_name = M
-  [../]
-  [./anisotropy]
-    type = CHInterfaceAniso
-    variable = c
-    mob_name = M
-    kappa_name = kappa_c
   [../]
 
   [./time]
@@ -129,22 +121,9 @@
   [../]
   [./CHconsts]
     type = GenericConstantMaterial
-    prop_names  = 'kappa_c'
-    prop_values = '2.0'
+    prop_names  = 'M kappa_c'
+    prop_values = '1 1e-10'
     block = 0
-  [../]
-  [./aniso]
-    type = InterfaceOrientationMaterial
-    block = 0
-    c = c
-  [../]
-  [./mobility]
-    type = ConstantAnisotropicMobility
-    block = 0
-    tensor = '1  1  0
-              1  1  0
-              0  0  0'
-    M_name = M
   [../]
 
   [./switching]
@@ -160,7 +139,7 @@
     g_order = SIMPLE
   [../]
 
-  [./microstructure]
+  [./column]
     type = Micro
     block = 0
     phase = eta
@@ -207,7 +186,7 @@
     variable = T
     T_hot = 473
     flux = 5e-6
-    dx = 10
+    dx = .02
     boundary = right
     length_scale = 1
   [../]
@@ -216,6 +195,7 @@
     variable = T
     boundary = right
   [../]
+[]
 
 [Preconditioning]
   [./SMP]
