@@ -11,8 +11,8 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 25
-    int_width = 0.01
+    numbub = 40
+    int_width = 0.1
     bubspac = 1.0
     radius = 0.5
     outvalue = 0 # UO2
@@ -22,20 +22,17 @@
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
-    int_width = 0.01
-    numbub = 25
+    int_width = 0.1
+    numbub = 40
     bubspac = 1.0
     radius = 0.5
-    outvalue = 0.143
-    invalue = 0.143
+    outvalue = 0.063
+    invalue = 0.063
     block = 0
   [../]
 []
 
 [Variables]
-  [./T]
-    initial_condition = 473
-  [../]
 
   [./eta]
     order = FIRST
@@ -52,10 +49,6 @@
 []
 
 [Kernels]
-  [./heat_conduction]
-    type = HeatConduction
-    variable = T
-  [../]
 
   [./detadt]
     type = TimeDerivative
@@ -106,18 +99,6 @@
       auto_direction = 'x y'
     [../]
   [../]
-  [./left_T] #Fix temperature on the left side
-    type = PresetBC
-    variable = T
-    boundary = left
-    value = 473
-  [../]
-  [./right_flux] #Set heat flux on the right side
-    type = NeumannBC
-    variable = T
-    boundary = right
-    value = 5e-6
-  [../]
 []
 
 [Materials]
@@ -130,7 +111,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '1e-10'
+    prop_values = '1'
     block = 0
   [../]
   [./aniso]
@@ -141,7 +122,7 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '1  1  0
+    tensor = '1  10  0
               1  1  0
               0  0  0'
     M_name = M
@@ -158,12 +139,6 @@
     block = 0
     eta = eta
     g_order = SIMPLE
-  [../]
-
-  [./microstructure]
-    type = Micro
-    block = 0
-    phase = eta
   [../]
 
   # Free energy of UO2 matrix
@@ -201,21 +176,6 @@
   [../]
 []
 
-[Postprocessors]
-  [./k_eff]
-    type = ThermalCond
-    variable = T
-    T_hot = 473
-    flux = 5e-6
-    dx = 10
-    boundary = right
-    length_scale = 1
-  [../]
-  [./right_T]
-    type = SideAverageValue
-    variable = T
-    boundary = right
-  [../]
 
 [Preconditioning]
   [./SMP]
@@ -236,11 +196,11 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 500
+  num_steps = 300
 
   [./TimeStepper]
   type = IterationAdaptiveDT
-  dt = .001 # Initial time step.
+  dt = .00001 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
 []

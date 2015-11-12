@@ -48,13 +48,11 @@ Micro::computeQpProperties()
   // Compute the heat conduction material properties as a linear combination of
   // the material properties for UO2 and U4O9.
 
-  // If the phase variable is given use it rather than the hard-coded porosity
+  // If the phase variable is given use it
     if (_use_phase_variable)
       _concentration[_qp] = _phase[_qp];
 
     else
-      // We're assuming close packing  so the porosity will be 1 - 0.74048 = 0.25952
-      // ( http://en.wikipedia.org/wiki/Close-packing_of_equal_spheres )
       _concentration[_qp] = _phase[_qp];
 
   // We will compute a "bulk" thermal conductivity, specific heat and density
