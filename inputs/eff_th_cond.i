@@ -23,6 +23,8 @@
   [./T] #Temperature used for the direct calculation
     initial_condition = 800
   [../]
+  [./eta]
+  [../]
 []
 
 [AuxVariables] #Creates second constant phase

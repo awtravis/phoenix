@@ -7,9 +7,6 @@
 [Variables]
   [./T]
   [../]
-[]
-
-[AuxVariables]
   [./eta]
   [../]
 []

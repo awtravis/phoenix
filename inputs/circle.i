@@ -10,7 +10,7 @@
 [MeshModifiers] #Adds a new node set
   [./new_nodeset]
     type = AddExtraNodeset
-    coord = '25 25'
+    coord = '100 100'
     new_boundary = 100
   [../]
 []
