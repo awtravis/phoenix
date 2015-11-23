@@ -8,10 +8,14 @@
   uniform_refine = 2
 []
 
+[GlobalParams]
+  penalty = 1e-3
+[]
+
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 40
+    numbub = 30
     int_width = 0.1
     bubspac = 2.0
     radius = 1.0
@@ -23,18 +27,16 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 40
+    numbub = 30
     bubspac = 2.0
     radius = 1.0
-    outvalue = 0.160
-    invalue = 0.160
+    outvalue = 0.10
+    invalue = 0.10
     block = 0
   [../]
 []
 
 [Variables]
-  [./T]
-  [../]
   [./eta]
     order = FIRST
     family = LAGRANGE
@@ -50,10 +52,6 @@
 []
 
 [Kernels]
-  [./heat_conduction]
-    type = HeatConduction
-    variable = T
-  [../]
 
   [./detadt]
     type = TimeDerivative
@@ -71,6 +69,13 @@
     kappa_name = kappa_eta
   [../]
 
+  [./penalty]
+    type = SwitchingFunctionPenalty
+    variable = eta
+    etas   = 'eta'
+    h_names = 'h'
+  [../]
+
   [./c_res]
     type = SplitCHParsed
     variable = c
@@ -80,9 +85,15 @@
     args = 'eta'
   [../]
   [./w_res]
-    type = SplitCHWRes
+    type = SplitCHWResAniso
     variable = w
     mob_name = M
+  [../]
+  [./anisotropy]
+    type = CHInterfaceAniso
+    variable = c
+    mob_name = M
+    kappa_name = kappa_c
   [../]
 
   [./time]
@@ -98,18 +109,6 @@
       auto_direction = 'x y'
     [../]
   [../]
-  [./left_T] #Fix temperature on the left side
-    type = PresetBC
-    variable = T
-    boundary = left
-    value = 473
-  [../]
-  [./right_flux] #Set heat flux on the right side
-    type = NeumannBC
-    variable = T
-    boundary = right
-    value = 5e-6
-  [../]
 []
 
 [Materials]
@@ -121,17 +120,24 @@
   [../]
   [./CHconsts]
     type = GenericConstantMaterial
-    prop_names  = 'M kappa_c'
-    prop_values = '1 1e-10'
+    prop_names  = 'kappa_c'
+    prop_values = '1e-5'
     block = 0
+  [../]
+  [./aniso]
+    type = InterfaceOrientationMaterial
+    block = 0
+    c = c
+  [../]
+  [./mobility]
+    type = ConstantAnisotropicMobility
+    block = 0
+    tensor = '0.1  0  0
+              0    0.5  0
+              0    0  0'
+    M_name = M
   [../]
 
-  [./switching]
-    type = SwitchingFunctionMaterial
-    block = 0
-    eta = eta
-    h_order = HIGH
-  [../]
   [./barrier]
     type = BarrierFunctionMaterial
     block = 0
@@ -139,10 +145,12 @@
     g_order = SIMPLE
   [../]
 
-  [./column]
-    type = Micro
+  [./switching]
+    type = SwitchingFunctionMaterial
     block = 0
-    phase = eta
+    function_name = h
+    eta = eta
+    h_orders = HIGH
   [../]
 
   # Free energy of UO2 matrix
@@ -180,23 +188,6 @@
   [../]
 []
 
-[Postprocessors]
-  [./k_eff]
-    type = ThermalCond
-    variable = T
-    T_hot = 473
-    flux = 5e-6
-    dx = .02
-    boundary = right
-    length_scale = 1
-  [../]
-  [./right_T]
-    type = SideAverageValue
-    variable = T
-    boundary = right
-  [../]
-[]
-
 [Preconditioning]
   [./SMP]
     type = SMP
@@ -216,7 +207,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 500
+  num_steps = 600
 
   [./TimeStepper]
   type = IterationAdaptiveDT

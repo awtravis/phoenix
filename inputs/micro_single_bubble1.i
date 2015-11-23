@@ -39,8 +39,8 @@
     variable = c
     int_width = 0.1
     radius = 7.5
-    outvalue = 0.04
-    invalue = 0.04
+    outvalue = 0.12
+    invalue = 0.12
     block = 0
     x1 = 25
     y1 = 25
@@ -237,7 +237,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 10
+  num_steps = 200
 
   [./TimeStepper]
   type = IterationAdaptiveDT

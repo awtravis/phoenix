@@ -1,48 +1,42 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 100
-  ny = 100
-  ymax = 50
-  xmax = 50
+  nx = 25
+  ny = 25
+  ymax = 20
+  xmax = 20
+  uniform_refine = 2
 []
 
-[MeshModifiers] #Adds a new node set`
-  [./new_nodeset]
-    type = AddExtraNodeset
-    coord = '100 100'
-    new_boundary = 100
-  [../]
+[GlobalParams]
+  penalty = 1e-3
 []
 
 [ICs]
   [./etaIC]
-    type = SmoothCircleIC
-    variable = eta
+    type = MultiSmoothCircleIC
+    numbub = 40
     int_width = 0.1
-    radius = 7.5
-    outvalue = 0  # UO2
-    invalue = 1   # U4O9
-    x1 = 25
-    y1 = 25
+    bubspac = 2.5
+    radius = 1.0
+    outvalue = 0 # UO2
+    variable = eta
+    invalue = 1 #U4O9
   [../]
   [./concentrationIC]
-    type = SmoothCircleIC
+    type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    radius = 7.5
-    outvalue = 0.06
-    invalue = 0.06
+    numbub = 40
+    bubspac = 2.5
+    radius = 1.0
+    outvalue = 0.10
+    invalue = 0.10
     block = 0
-    x1 = 25
-    y1 = 25
   [../]
 []
 
 [Variables]
-  [./T]
-    initial_condition = 800
-  [../]
   [./eta]
     order = FIRST
     family = LAGRANGE
@@ -58,11 +52,6 @@
 []
 
 [Kernels]
-  [./htcond]
-    type = HeatConduction
-    variable = T
-    block = 0
-  [../]
 
   [./detadt]
     type = TimeDerivative
@@ -78,6 +67,13 @@
     type = ACInterface
     variable = eta
     kappa_name = kappa_eta
+  [../]
+
+  [./penalty]
+    type = SwitchingFunctionPenalty
+    variable = eta
+    etas   = 'eta'
+    h_names = 'h'
   [../]
 
   [./c_res]
@@ -113,34 +109,9 @@
       auto_direction = 'x y'
     [../]
   [../]
-
-  [./left_T] #Fix temperature on the left side
-    type = PresetBC
-    variable = T
-    boundary = left
-    value = 800
-  [../]
-  [./right_flux] #Set heat flux on the right side
-    type = NeumannBC
-    variable = T
-    boundary = right
-    value = 5e-6
-  [../]
 []
 
 [Materials]
-  [./thcond] #The equation defining the thermal conductivity is defined here, using two ifs
-    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
-    type = ParsedMaterial
-    block = 0
-    constant_names = 'length_scale k_b k_p2 k_int'
-    constant_expressions = '1e-6 5 1 0.1'
-    function = 'sk_b:= length_scale*k_b; sk_p2:= length_scale*k_p2; sk_int:= k_int*length_scale; if(eta>0.1,if(eta>0.95,sk_p2,sk_int),sk_b)'
-    outputs = exodus
-    f_name = thermal_conductivity
-    args = eta
-  [../]
-
   [./AHconsts]
     type = GenericConstantMaterial
     block = 0
@@ -150,7 +121,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '1e-5'
+    prop_values = '1e-10'
     block = 0
   [../]
   [./aniso]
@@ -161,23 +132,25 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '0.1  0  0
-              0    0  0
-              0    0  0'
+    tensor = '0.1  0.1  0
+              0    0    0
+              0    0    0'
     M_name = M
   [../]
 
-  [./switching]
-    type = SwitchingFunctionMaterial
-    block = 0
-    eta = eta
-    h_order = HIGH
-  [../]
   [./barrier]
     type = BarrierFunctionMaterial
     block = 0
     eta = eta
     g_order = SIMPLE
+  [../]
+
+  [./switching]
+    type = SwitchingFunctionMaterial
+    block = 0
+    function_name = h
+    eta = eta
+    h_orders = HIGH
   [../]
 
   # Free energy of UO2 matrix
@@ -215,7 +188,6 @@
   [../]
 []
 
-
 [Preconditioning]
   [./SMP]
     type = SMP
@@ -235,12 +207,32 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 10
+  num_steps = 600
 
   [./TimeStepper]
   type = IterationAdaptiveDT
-  dt = .1 # Initial time step.
+  dt = .001 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
+  [../]
+[]
+
+[Adaptivity]
+  marker = error_frac
+  max_h_level = 3
+  [./Indicators]
+    [./eta_jump]
+      type = GradientJumpIndicator
+      variable = eta
+      scale_by_flux_faces = true
+    [../]
+  [../]
+  [./Markers]
+    [./error_frac]
+      type = ErrorFractionMarker
+      coarsen = 0.01
+      indicator = eta_jump
+      refine = 0.6
+    [../]
   [../]
 []
 
