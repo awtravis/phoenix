@@ -3,16 +3,12 @@
   dim = 2
   nx = 100
   ny = 100
-  ymax = 50
+  xmin = 0
+  ymin = 0
   xmax = 50
-[]
-
-[MeshModifiers] #Adds a new node set`
-  [./new_nodeset]
-    type = AddExtraNodeset
-    coord = '100 100'
-    new_boundary = 100
-  [../]
+  ymax = 50
+  block = 0
+  elem_type = QUAD4
 []
 
 [ICs]
@@ -41,7 +37,7 @@
 
 [Variables]
   [./T]
-    initial_condition = 800
+    initial_condition = 473
   [../]
   [./eta]
     order = FIRST
@@ -118,13 +114,15 @@
     type = PresetBC
     variable = T
     boundary = left
-    value = 800
+    value = 473
+    block = 0
   [../]
   [./right_flux] #Set heat flux on the right side
     type = NeumannBC
     variable = T
     boundary = right
     value = 5e-6
+    block = 0
   [../]
 []
 
@@ -161,9 +159,9 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '0.1  0  0
-              0    0  0
-              0    0  0'
+    tensor = '0.0  0  0
+              0  0.1   0
+              0     0     0'
     M_name = M
   [../]
 
@@ -235,7 +233,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 10
+  num_steps = 15
 
   [./TimeStepper]
   type = IterationAdaptiveDT

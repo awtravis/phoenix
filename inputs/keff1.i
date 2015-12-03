@@ -1,12 +1,17 @@
 #Thermal gradient script for last mesh in series
 
 [Mesh]
-  file = keff1.e
+  file = circle_out.e
+  block = 0
 []
 
 [Variables]
   [./T]
+    initial_condition = 473
   [../]
+[]
+
+[AuxVariables]
   [./eta]
   [../]
 []
@@ -19,8 +24,8 @@
 []
 
 [BCs]
-  [./left_T] #Fix temperature on the left side
-    type = PresetBC
+  [./left] #Fix temperature on the left side
+    type = DirichletBC
     variable = T
     boundary = left
     value = 473
@@ -34,10 +39,16 @@
 []
 
 [Materials]
-  [./column]
-    type = Micro
+  [./thcond] #The equation defining the thermal conductivity is defined here, using two ifs
+    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
+    type = ParsedMaterial
     block = 0
-    phase = eta
+    constant_names = 'length_scale k_b k_p2 k_int'
+    constant_expressions = '1e-6 5 1 0.1'
+    function = 'sk_b:= length_scale*k_b; sk_p2:= length_scale*k_p2; sk_int:= k_int*length_scale; if(eta>0.1,if(eta>0.95,sk_p2,sk_int),sk_b)'
+    outputs = exodus
+    f_name = thermal_conductivity
+    args = eta
   [../]
 []
 
@@ -55,7 +66,7 @@
     flux = 5e-6
     length_scale = 1e-06
     T_hot = 473
-    dx = 100
+    dx = 50
     boundary = right
   [../]
 []
