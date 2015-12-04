@@ -13,6 +13,12 @@
 
 [AuxVariables]
   [./eta]
+    order = FIRST
+    family = LAGRANGE
+    # For reading a solution
+    # from an ExodusII file
+    initial_from_file_var = eta
+    initial_from_file_timestep = LATEST
   [../]
 []
 
@@ -44,7 +50,7 @@
     type = ParsedMaterial
     block = 0
     constant_names = 'length_scale k_b k_p2 k_int'
-    constant_expressions = '1e-6 5 1 0.1'
+    constant_expressions = '1e-6 6.9 1.5 0.1'
     function = 'sk_b:= length_scale*k_b; sk_p2:= length_scale*k_p2; sk_int:= k_int*length_scale; if(eta>0.1,if(eta>0.95,sk_p2,sk_int),sk_b)'
     outputs = exodus
     f_name = thermal_conductivity

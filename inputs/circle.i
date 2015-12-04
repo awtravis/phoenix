@@ -16,7 +16,7 @@
     type = SmoothCircleIC
     variable = eta
     int_width = 0.1
-    radius = 7.5
+    radius = 10
     outvalue = 0  # UO2
     invalue = 1   # U4O9
     x1 = 25
@@ -26,9 +26,9 @@
     type = SmoothCircleIC
     variable = c
     int_width = 0.1
-    radius = 7.5
-    outvalue = 0.06
-    invalue = 0.06
+    radius = 10
+    outvalue = 0.143
+    invalue = 0.143
     block = 0
     x1 = 25
     y1 = 25
@@ -233,7 +233,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 15
+  num_steps = 150
 
   [./TimeStepper]
   type = IterationAdaptiveDT

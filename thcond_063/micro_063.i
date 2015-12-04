@@ -1,75 +1,59 @@
-# Microstructure for multiple U4O9 domains in a UO2 matrix
-# Initial test condition with c = 0.042
-
 [Mesh]
   type = GeneratedMesh
   dim = 2
   nx = 25
   ny = 25
-  nz = 0
-  xmin = 0
-  xmax = 25
-  ymin = 0
-  ymax = 25
-  elem_type = QUAD4
+  ymax = 50
+  xmax = 50
   uniform_refine = 2
 []
 
-[Variables]
-  # Oxygen concentration within the microstructure
-  [./c]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  # Energy barrier
-  # Default value equal to 1
-  [./w]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  # Phase field variable
-  [./eta]
-    order = FIRST
-    family = LAGRANGE
-  [../]
+[GlobalParams]
+  penalty = 1e-9
 []
 
 [ICs]
-  # UO2 = 0.0 and U4O9 = 0.25
+  [./etaIC]
+    type = MultiSmoothCircleIC
+    numbub = 30
+    int_width = 0.1
+    bubspac = 6.0
+    radius = 2.5
+    outvalue = 0 # UO2
+    variable = eta
+    invalue = 1 #U4O9
+    block = 0
+  [../]
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 25
-    bubspac = 2.0
-    radius = 2.0
+    numbub = 30
+    bubspac = 6.0
+    radius = 2.5
     outvalue = 0.063
     invalue = 0.063
     block = 0
   [../]
-  # UO2 = 0.0 and U4O9 = 1.0
-  [./etaIC]
-    type = MultiSmoothCircleIC
-    variable = eta
-    int_width = 0.1
-    numbub = 25
-    bubspac = 2.0
-    radius = 2.0
-    outvalue = 0
-    invalue = 1.0
-    block = 0
-  [../]
 []
 
-[BCs]
-  [./Periodic]
-    [./All]
-      auto_direction = 'x y'
-    [../]
+[Variables]
+  [./eta]
+    order = FIRST
+    family = LAGRANGE
+  [../]
+  [./c]
+    order = FIRST
+    family = LAGRANGE
+  [../]
+  [./w]
+    order = FIRST
+    family = LAGRANGE
   [../]
 []
 
 [Kernels]
+
   [./detadt]
     type = TimeDerivative
     variable = eta
@@ -84,6 +68,13 @@
     type = ACInterface
     variable = eta
     kappa_name = kappa_eta
+  [../]
+
+  [./penalty]
+    type = SwitchingFunctionPenalty
+    variable = eta
+    etas   = 'eta'
+    h_names = 'h'
   [../]
 
   [./c_res]
@@ -113,6 +104,14 @@
   [../]
 []
 
+[BCs]
+  [./Periodic]
+    [./All]
+      auto_direction = 'x y'
+    [../]
+  [../]
+[]
+
 [Materials]
   [./AHconsts]
     type = GenericConstantMaterial
@@ -123,7 +122,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '2.0'
+    prop_values = '1e-10'
     block = 0
   [../]
   [./aniso]
@@ -134,23 +133,25 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '.1  0  0
-              0   0  0
-              0   0  0'
+    tensor = '0.02     0.01     0
+              0.01     0.1     0
+              0        0        0'
     M_name = M
   [../]
 
-  [./switching]
-    type = SwitchingFunctionMaterial
-    block = 0
-    eta = eta
-    h_order = HIGH
-  [../]
   [./barrier]
     type = BarrierFunctionMaterial
     block = 0
     eta = eta
     g_order = SIMPLE
+  [../]
+
+  [./switching]
+    type = SwitchingFunctionMaterial
+    block = 0
+    function_name = h
+    eta = eta
+    h_orders = HIGH
   [../]
 
   # Free energy of UO2 matrix
@@ -207,7 +208,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 750
+  num_steps = 1000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
@@ -237,5 +238,7 @@
 []
 
 [Outputs]
+  execute_on = 'initial timestep_end'
   exodus = true
+  csv = true
 []

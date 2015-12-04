@@ -9,7 +9,7 @@
 []
 
 [GlobalParams]
-  penalty = 1e-7
+  penalty = 1e-9
 []
 
 [ICs]
