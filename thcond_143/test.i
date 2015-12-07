@@ -11,27 +11,32 @@
   elem_type = QUAD4
 []
 
+[GlobalParams]
+  penalty = 1e-9
+[]
+
 [ICs]
   [./etaIC]
-    type = SmoothCircleIC
-    variable = eta
+    type = MultiSmoothCircleIC
+    numbub = 30
     int_width = 0.1
-    radius = 10
-    outvalue = 0  # UO2
-    invalue = 1   # U4O9
-    x1 = 25
-    y1 = 25
+    bubspac = 6.0
+    radius = 2.5
+    outvalue = 0 # UO2
+    variable = eta
+    invalue = 1 #U4O9
+    block = 0
   [../]
   [./concentrationIC]
-    type = SmoothCircleIC
+    type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    radius = 10
+    numbub = 30
+    bubspac = 6.0
+    radius = 2.5
     outvalue = 0.143
     invalue = 0.143
     block = 0
-    x1 = 25
-    y1 = 25
   [../]
 []
 
@@ -74,6 +79,13 @@
     type = ACInterface
     variable = eta
     kappa_name = kappa_eta
+  [../]
+
+  [./penalty]
+    type = SwitchingFunctionPenalty
+    variable = eta
+    etas   = 'eta'
+    h_names = 'h'
   [../]
 
   [./c_res]
@@ -148,7 +160,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '1e-5'
+    prop_values = '1e-10'
     block = 0
   [../]
   [./aniso]
@@ -159,23 +171,25 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '0.0  0  0
-              0  0.1   0
-              0     0     0'
+    tensor = '0.02     0.01     0
+              0.01     0.1     0
+              0        0        0'
     M_name = M
   [../]
 
-  [./switching]
-    type = SwitchingFunctionMaterial
-    block = 0
-    eta = eta
-    h_order = HIGH
-  [../]
   [./barrier]
     type = BarrierFunctionMaterial
     block = 0
     eta = eta
     g_order = SIMPLE
+  [../]
+
+  [./switching]
+    type = SwitchingFunctionMaterial
+    block = 0
+    function_name = h
+    eta = eta
+    h_orders = HIGH
   [../]
 
   # Free energy of UO2 matrix
@@ -213,7 +227,6 @@
   [../]
 []
 
-
 [Preconditioning]
   [./SMP]
     type = SMP
@@ -233,32 +246,12 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 150
+  num_steps = 100
 
   [./TimeStepper]
   type = IterationAdaptiveDT
-  dt = .1 # Initial time step.
+  dt = .001 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
-  [../]
-[]
-
-[Adaptivity]
-  marker = error_frac
-  max_h_level = 3
-  [./Indicators]
-    [./eta_jump]
-      type = GradientJumpIndicator
-      variable = eta
-      scale_by_flux_faces = true
-    [../]
-  [../]
-  [./Markers]
-    [./error_frac]
-      type = ErrorFractionMarker
-      coarsen = 0.01
-      indicator = eta_jump
-      refine = 0.6
-    [../]
   [../]
 []
 
