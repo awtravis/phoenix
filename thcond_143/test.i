@@ -255,6 +255,26 @@
   [../]
 []
 
+[Adaptivity]
+  marker = error_frac
+  max_h_level = 3
+  [./Indicators]
+    [./eta_jump]
+      type = GradientJumpIndicator
+      variable = eta
+      scale_by_flux_faces = true
+    [../]
+  [../]
+  [./Markers]
+    [./error_frac]
+      type = ErrorFractionMarker
+      coarsen = 0.01
+      indicator = eta_jump
+      refine = 0.6
+    [../]
+  [../]
+[]
+
 [Outputs]
   execute_on = 'initial timestep_end'
   exodus = true

@@ -1,24 +1,23 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 25
-  ny = 25
-  ymax = 50
+  nx = 100
+  ny = 100
+  xmin = 0
+  ymin = 0
   xmax = 50
-  uniform_refine = 2
-[]
-
-[GlobalParams]
-  penalty = 2
+  ymax = 50
+  block = 0
+  elem_type = QUAD4
 []
 
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 30
+    numbub = 20
     int_width = 0.1
-    bubspac = 6.0
-    radius = 2.5
+    bubspac = 7.0
+    radius = 3.0
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
@@ -28,9 +27,9 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 30
-    bubspac = 6.0
-    radius = 2.5
+    numbub = 20
+    bubspac = 7.0
+    radius = 3.0
     outvalue = 0.063
     invalue = 0.063
     block = 0
@@ -68,13 +67,6 @@
     type = ACInterface
     variable = eta
     kappa_name = kappa_eta
-  [../]
-
-  [./penalty]
-    type = SwitchingFunctionPenalty
-    variable = eta
-    etas   = 'eta'
-    h_names = 'h'
   [../]
 
   [./c_res]
@@ -122,7 +114,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '1e-10'
+    prop_values = '1'
     block = 0
   [../]
   [./aniso]
@@ -133,8 +125,8 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '0.02     0.01     0
-              0.01     0.1     0
+    tensor = '0.05     0       0
+              0     1         0
               0        0        0'
     M_name = M
   [../]
@@ -208,32 +200,12 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1000
+  num_steps = 1111
 
   [./TimeStepper]
   type = IterationAdaptiveDT
   dt = .001 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
-  [../]
-[]
-
-[Adaptivity]
-  marker = error_frac
-  max_h_level = 3
-  [./Indicators]
-    [./eta_jump]
-      type = GradientJumpIndicator
-      variable = eta
-      scale_by_flux_faces = true
-    [../]
-  [../]
-  [./Markers]
-    [./error_frac]
-      type = ErrorFractionMarker
-      coarsen = 0.01
-      indicator = eta_jump
-      refine = 0.6
-    [../]
   [../]
 []
 

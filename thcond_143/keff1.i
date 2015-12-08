@@ -9,6 +9,14 @@
   [./T]
     initial_condition = 473
   [../]
+  [./Tx_AEH] #Temperature used for the x-component of the AEH solve
+    initial_condition = 473
+    scaling = 1.0e4 #Scales residual to improve convergence
+  [../]
+  [./Ty_AEH] #Temperature used for the y-component of the AEH solve
+    initial_condition = 473
+    scaling = 1.0e4  #Scales residual to improve convergence
+  [../]
 []
 
 [AuxVariables]
@@ -27,9 +35,33 @@
     type = HeatConduction
     variable = T
   [../]
+  [./heat_x] #All other kernels are for AEH approach to calculate thermal cond.
+    type = HeatConduction
+    variable = Tx_AEH
+  [../]
+  [./heat_rhs_x]
+    type = HomogenizationHeatConduction
+    variable = Tx_AEH
+    component = 0
+  [../]
+  [./heat_y]
+    type = HeatConduction
+    variable = Ty_AEH
+  [../]
+  [./heat_rhs_y]
+    type = HomogenizationHeatConduction
+    variable = Ty_AEH
+    component = 1
+  [../]
 []
 
 [BCs]
+  [./Periodic]
+    [./all]
+      auto_direction = 'x y'
+      variable = 'Tx_AEH Ty_AEH'
+    [../]
+  [../]
   [./left] #Fix temperature on the left side
     type = DirichletBC
     variable = T
@@ -42,12 +74,31 @@
     boundary = right
     value = 5e-6
   [../]
+  [./fix_x] #Fix Tx_AEH at a single point
+    type = DirichletBC
+    variable = Tx_AEH
+    value = 473
+    boundary = left
+  [../]
+  [./fix_y] #Fix Ty_AEH at a single point
+    type = DirichletBC
+    variable = Ty_AEH
+    value = 473
+    boundary = left
+  [../]
 []
 
 [Materials]
-  [./thcond]
-    type = Micro
-    variable = eta
+  [./thcond] #The equation defining the thermal conductivity is defined here, using two ifs
+    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
+    type = ParsedMaterial
+    block = 0
+    constant_names = 'length_scale k_b k_p2 k_int'
+    constant_expressions = '1e-6 6.9 1.5 0.1'
+    function = 'sk_b:= length_scale*k_b; sk_p2:= length_scale*k_p2; sk_int:= k_int*length_scale; if(eta>0.1,if(eta>0.90,sk_p2,sk_int),sk_b)'
+    outputs = exodus
+    f_name = thermal_conductivity
+    args = eta
   [../]
 []
 
@@ -67,6 +118,30 @@
     T_hot = 473
     dx = 50
     boundary = right
+  [../]
+  [./k_x_AEH] #Effective thermal conductivity in x-direction from AEH
+    type = HomogenizedThermalConductivity
+    variable = Tx_AEH
+    temp_x = Tx_AEH
+    temp_y = Ty_AEH
+    component = 0
+    scale_factor = 1e6 #Scale due to length scale of problem
+  [../]
+  [./k_y_AEH] #Effective thermal conductivity in x-direction from AEH
+    type = HomogenizedThermalConductivity
+    variable = Ty_AEH
+    temp_x = Tx_AEH
+    temp_y = Ty_AEH
+    component = 1
+    scale_factor = 1e6 #Scale due to length scale of problem
+  [../]
+[]
+
+[Preconditioning]
+  [./SMP]
+    type = SMP
+    off_diag_row = 'Tx_AEH Ty_AEH'
+    off_diag_column = 'Ty_AEH Tx_AEH'
   [../]
 []
 
