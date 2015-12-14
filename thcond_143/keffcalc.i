@@ -2,7 +2,6 @@
 
 [Mesh]
   file = micro_143_out.e
-  block = 0
 []
 
 [Variables]
@@ -12,12 +11,12 @@
 []
 
 [AuxVariables]
-  [./eta]
+  [./c]
     order = FIRST
     family = LAGRANGE
     # For reading a solution
     # from an ExodusII file
-    initial_from_file_var = eta
+    initial_from_file_var = c
     initial_from_file_timestep = LATEST
   [../]
 []
@@ -45,16 +44,11 @@
 []
 
 [Materials]
-  [./thcond] #The equation defining the thermal conductivity is defined here, using two ifs
-    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
-    type = ParsedMaterial
+  [./thcond]
+    type = keff
     block = 0
-    constant_names = 'length_scale k_b k_p2 k_int'
-    constant_expressions = '1e-6 6.9 1.5 0.1'
-    function = 'sk_b:= length_scale*k_b; sk_p2:= length_scale*k_p2; sk_int:= k_int*length_scale; if(eta>0.1,if(eta>0.90,sk_p2,sk_int),sk_b)'
-    outputs = exodus
-    f_name = thermal_conductivity
-    args = eta
+    concentration = c
+    temperature = T
   [../]
 []
 

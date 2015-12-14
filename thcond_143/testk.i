@@ -5,7 +5,7 @@
 [Functions]
   [./k_func]
     type = PiecewiseLinear
-    x = '298 373 473'
+    x = '0 1 2'
     y = '9.731   8.469   6.9'
   [../]
 

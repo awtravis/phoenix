@@ -11,14 +11,17 @@
   elem_type = QUAD4
 []
 
+[GlobalParams]
+  penalty = 1e-5
+[]
 
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 5
+    numbub = 100
     int_width = 0.1
-    bubspac = 11.0
-    radius = 7.0
+    bubspac = 1.5
+    radius = 0.5
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
@@ -28,11 +31,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 5
-    bubspac = 11.0
-    radius = 7.0
-    outvalue = 0.042
-    invalue = 0.042
+    numbub = 100
+    bubspac = 1.5
+    radius = .5
+    outvalue = 0.143
+    invalue = 0.143
     block = 0
   [../]
 []
@@ -69,6 +72,14 @@
     variable = eta
     kappa_name = kappa_eta
   [../]
+
+  [./penalty]
+    type = SwitchingFunctionPenalty
+    variable = eta
+    etas   = 'eta'
+    h_names = 'h'
+  [../]
+
 
   [./c_res]
     type = SplitCHParsed
@@ -109,7 +120,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'M kappa_c'
-    prop_values = '1 1e-10'
+    prop_values = '1 1'
     block = 0
   [../]
 
@@ -134,7 +145,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '75*(c^2)'
+    function = '50*(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -144,7 +155,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '75*((0.25-c)^2)'
+    function = '50*((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -182,7 +193,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1000
+  num_steps = 800
 
   [./TimeStepper]
   type = IterationAdaptiveDT

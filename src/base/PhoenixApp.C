@@ -2,7 +2,7 @@
 #include "Moose.h"
 #include "AppFactory.h"
 #include "ModulesApp.h"
-#include "Micro.h"
+#include "keff.h"
 
 template<>
 InputParameters validParams<PhoenixApp>()
@@ -45,7 +45,7 @@ extern "C" void PhoenixApp__registerObjects(Factory & factory) { PhoenixApp::reg
 void
 PhoenixApp::registerObjects(Factory & factory)
 {
-  registerObject(Micro);
+  registerObject(keff);
 }
 
 // External entry point for dynamic syntax association

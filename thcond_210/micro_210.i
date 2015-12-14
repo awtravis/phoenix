@@ -11,14 +11,18 @@
   elem_type = QUAD4
 []
 
+[GlobalParams]
+  penalty = 1e-8
+[]
+
 
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 5
+    numbub = 110
     int_width = 0.1
-    bubspac = 11.0
-    radius = 7.0
+    bubspac = 1.5
+    radius = 0.5
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
@@ -28,11 +32,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 5
-    bubspac = 11.0
-    radius = 7.0
-    outvalue = 0.042
-    invalue = 0.042
+    numbub = 110
+    bubspac = 1.5
+    radius = .5
+    outvalue = 0.210
+    invalue = 0.210
     block = 0
   [../]
 []
@@ -69,6 +73,14 @@
     variable = eta
     kappa_name = kappa_eta
   [../]
+
+  [./penalty]
+    type = SwitchingFunctionPenalty
+    variable = eta
+    etas   = 'eta'
+    h_names = 'h'
+  [../]
+
 
   [./c_res]
     type = SplitCHParsed
@@ -134,7 +146,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '75*(c^2)'
+    function = '150*(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -144,7 +156,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '75*((0.25-c)^2)'
+    function = '150*((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]

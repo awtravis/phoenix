@@ -11,14 +11,17 @@
   elem_type = QUAD4
 []
 
+[GlobalParams]
+  penalty = 1e-8
+[]
 
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 5
+    numbub = 100
     int_width = 0.1
-    bubspac = 11.0
-    radius = 7.0
+    bubspac = 1.5
+    radius = 0.5
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
@@ -28,11 +31,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 5
-    bubspac = 11.0
-    radius = 7.0
-    outvalue = 0.042
-    invalue = 0.042
+    numbub = 100
+    bubspac = 1.5
+    radius = 0.5
+    outvalue = 0.143
+    invalue = 0.143
     block = 0
   [../]
 []
@@ -70,6 +73,13 @@
     kappa_name = kappa_eta
   [../]
 
+  [./penalty]
+    type = SwitchingFunctionPenalty
+    variable = eta
+    etas   = 'eta'
+    h_names = 'h'
+  [../]
+
   [./c_res]
     type = SplitCHParsed
     variable = c
@@ -79,9 +89,15 @@
     args = 'eta'
   [../]
   [./w_res]
-    type = SplitCHWRes
+    type = SplitCHWResAniso
     variable = w
     mob_name = M
+  [../]
+  [./anisotropy]
+    type = CHInterfaceAniso
+    variable = c
+    mob_name = M
+    kappa_name = kappa_c
   [../]
 
   [./time]
@@ -108,9 +124,22 @@
   [../]
   [./CHconsts]
     type = GenericConstantMaterial
-    prop_names  = 'M kappa_c'
-    prop_values = '1 1e-10'
+    prop_names  = 'kappa_c'
+    prop_values = '1e-10'
     block = 0
+  [../]
+  [./aniso]
+    type = InterfaceOrientationMaterial
+    block = 0
+    c = c
+  [../]
+  [./mobility]
+    type = ConstantAnisotropicMobility
+    block = 0
+    tensor = '0.05     0.02       0
+              0.02     0.1         0
+              0        0        0'
+    M_name = M
   [../]
 
   [./barrier]
@@ -134,7 +163,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '75*(c^2)'
+    function = '100*(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -144,7 +173,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '75*((0.25-c)^2)'
+    function = '100*((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -182,7 +211,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1000
+  num_steps = 1111
 
   [./TimeStepper]
   type = IterationAdaptiveDT

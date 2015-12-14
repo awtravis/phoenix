@@ -15,13 +15,14 @@
   penalty = 1e-8
 []
 
+
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 60
+    numbub = 110
     int_width = 0.1
-    bubspac = 5.0
-    radius = 1.5
+    bubspac = 1.5
+    radius = 0.5
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
@@ -31,9 +32,9 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 60
-    bubspac = 5.0
-    radius = 1.5
+    numbub = 110
+    bubspac = 1.5
+    radius = .5
     outvalue = 0.177
     invalue = 0.177
     block = 0
@@ -80,6 +81,7 @@
     h_names = 'h'
   [../]
 
+
   [./c_res]
     type = SplitCHParsed
     variable = c
@@ -89,15 +91,9 @@
     args = 'eta'
   [../]
   [./w_res]
-    type = SplitCHWResAniso
+    type = SplitCHWRes
     variable = w
     mob_name = M
-  [../]
-  [./anisotropy]
-    type = CHInterfaceAniso
-    variable = c
-    mob_name = M
-    kappa_name = kappa_c
   [../]
 
   [./time]
@@ -124,22 +120,9 @@
   [../]
   [./CHconsts]
     type = GenericConstantMaterial
-    prop_names  = 'kappa_c'
-    prop_values = '1e-10'
+    prop_names  = 'M kappa_c'
+    prop_values = '1 1e-10'
     block = 0
-  [../]
-  [./aniso]
-    type = InterfaceOrientationMaterial
-    block = 0
-    c = c
-  [../]
-  [./mobility]
-    type = ConstantAnisotropicMobility
-    block = 0
-    tensor = '0.05     0.02       0
-              0.02     0.1         0
-              0        0        0'
-    M_name = M
   [../]
 
   [./barrier]
@@ -163,7 +146,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '100*(c^2)'
+    function = '150*(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -173,7 +156,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '100*((0.25-c)^2)'
+    function = '150*((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -211,7 +194,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1111
+  num_steps = 1000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
