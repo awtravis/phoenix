@@ -12,17 +12,17 @@
 []
 
 [GlobalParams]
-  penalty = 1e-8
+  penalty = 1e-3
 []
 
 
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 110
+    numbub = 100
     int_width = 0.1
-    bubspac = 1.5
-    radius = 0.5
+    bubspac = 2.0
+    radius = 1.0
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
@@ -33,8 +33,8 @@
     variable = c
     int_width = 0.1
     numbub = 110
-    bubspac = 1.5
-    radius = .5
+    bubspac = 2.0
+    radius = 1.0
     outvalue = 0.104
     invalue = 0.104
     block = 0
@@ -146,7 +146,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '150*(c^2)'
+    function = '100*(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -156,7 +156,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '150*((0.25-c)^2)'
+    function = '100*((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
