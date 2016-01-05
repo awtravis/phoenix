@@ -2,7 +2,12 @@
 #include "Moose.h"
 #include "AppFactory.h"
 #include "ModulesApp.h"
+<<<<<<< HEAD
 #include "keff.h"
+=======
+#include "MooseSyntax.h"
+#include "Micro.h"
+>>>>>>> 7fefd5c169bd3332993c0a70a50624d4fc3bef59
 
 template<>
 InputParameters validParams<PhoenixApp>()
@@ -51,6 +56,6 @@ PhoenixApp::registerObjects(Factory & factory)
 // External entry point for dynamic syntax association
 extern "C" void PhoenixApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory) { PhoenixApp::associateSyntax(syntax, action_factory); }
 void
-PhoenixApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
+PhoenixApp::associateSyntax(Syntax & /*syntax*/, ActionFactory & /*action_factory*/)
 {
 }
