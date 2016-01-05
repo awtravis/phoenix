@@ -2,12 +2,9 @@
 #include "Moose.h"
 #include "AppFactory.h"
 #include "ModulesApp.h"
-<<<<<<< HEAD
 #include "keff.h"
-=======
 #include "MooseSyntax.h"
 #include "Micro.h"
->>>>>>> 7fefd5c169bd3332993c0a70a50624d4fc3bef59
 
 template<>
 InputParameters validParams<PhoenixApp>()
