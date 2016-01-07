@@ -55,7 +55,7 @@
     type = DirichletBC
     variable = T
     boundary = left
-    value = 1673
+    value = 298
   [../]
   [./right_flux] #Set heat flux on the right side
     type = NeumannBC
@@ -70,8 +70,6 @@
     type = keff
     block = 0
     concentration = c
-    f_name = thermal_conductivity
-    args = c
     outputs = exodus
   [../]
 []
