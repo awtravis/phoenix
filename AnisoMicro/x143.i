@@ -137,9 +137,9 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '0     0     0
-              0     0     0
-              0     0     0'
+    tensor = '0.5     0.2     0
+              0.2     0.1     0
+              0       0       0'
     M_name = M
   [../]
 
@@ -164,7 +164,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '125*(c^2)'
+    function = '150*(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -174,7 +174,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '125*((0.25-c)^2)'
+    function = '150*((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -212,7 +212,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1500
+  num_steps = 1000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
