@@ -137,9 +137,9 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '0.05     0.02       0
-              0.02     0.1         0
-              0        0        0'
+    tensor = '0     0     0
+              0     0     0
+              0     0     0'
     M_name = M
   [../]
 
@@ -164,7 +164,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '150*(c^2)'
+    function = '125*(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -174,7 +174,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '150*((0.25-c)^2)'
+    function = '125*((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
