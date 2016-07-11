@@ -212,7 +212,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1500
+  num_steps = 2000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
