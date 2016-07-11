@@ -18,7 +18,7 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 100
+    numbub = 125
     int_width = 0.1
     bubspac = 1.5
     radius = 0.5
@@ -31,7 +31,7 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 100
+    numbub = 125
     bubspac = 1.5
     radius = 0.5
     outvalue = 0.143
@@ -125,7 +125,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '1e-10'
+    prop_values = '1'
     block = 0
   [../]
   [./aniso]
@@ -164,7 +164,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '150*(c^2)'
+    function = '200*(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -174,7 +174,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '150*((0.25-c)^2)'
+    function = '200*((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -212,7 +212,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1000
+  num_steps = 500
 
   [./TimeStepper]
   type = IterationAdaptiveDT
