@@ -11,17 +11,13 @@
   elem_type = QUAD4
 []
 
-[GlobalParams]
-  penalty = 1e-8
-[]
-
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 125
+    numbub = 20
     int_width = 0.1
-    bubspac = 1.5
-    radius = 0.5
+    bubspac = 7.0
+    radius = 3.0
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
@@ -31,9 +27,9 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 125
-    bubspac = 1.5
-    radius = 0.5
+    numbub = 20
+    bubspac = 7.0
+    radius = 3.0
     outvalue = 0.063
     invalue = 0.063
     block = 0
@@ -71,13 +67,6 @@
     type = ACInterface
     variable = eta
     kappa_name = kappa_eta
-  [../]
-
-  [./penalty]
-    type = SwitchingFunctionPenalty
-    variable = eta
-    etas   = 'eta'
-    h_names = 'h'
   [../]
 
   [./c_res]
@@ -125,7 +114,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '1'
+    prop_values = '1e-10'
     block = 0
   [../]
   [./aniso]
@@ -137,9 +126,9 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '0.5     0.2     0
-              0.2     0.1     0
-              0       0       0'
+    tensor = '0.05     0       0
+              0     1         0
+              0        0        0'
     M_name = M
   [../]
 
@@ -164,7 +153,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '200*(c^2)'
+    function = '100*(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -174,7 +163,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '200*((0.25-c)^2)'
+    function = '100*((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
