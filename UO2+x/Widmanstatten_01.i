@@ -11,6 +11,20 @@
   elem_type = QUAD4
 []
 
+[Variables]
+  [./eta]
+    order = FIRST
+    family = LAGRANGE
+  [../]
+  [./c]
+    order = FIRST
+    family = LAGRANGE
+  [../]
+  [./w]
+    order = FIRST
+    family = LAGRANGE
+  [../]
+[]
 
 [ICs]
   [./etaIC]
@@ -37,44 +51,27 @@
   [../]
 []
 
-[Variables]
-  [./eta]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  [./c]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  [./w]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-[]
-
 [Kernels]
-
   [./detadt]
     type = TimeDerivative
     variable = eta
   [../]
-  [./ACBulk]
+  [./anisoACinterface1]
+    type = ACInterfaceKobayashi1
+    variable = eta
+    mob_name = L
+  [../]
+  [./anisoACinterface2]
+    type = ACInterfaceKobayashi2
+    variable = eta
+    mob_name = L
+  [../]
+  [./AllenCahn]
     type = AllenCahn
     variable = eta
     args = c
+    mob_name = L
     f_name = F
-  [../]
-  [./ACInterface]
-    type = ACInterface
-    variable = eta
-    kappa_name = kappa_eta
-  [../]
-
-  [./penalty]
-    type = SwitchingFunctionPenalty
-    variable = eta
-    etas   = 'eta'
-    h_names = 'h'
   [../]
 
   [./c_res]
@@ -86,15 +83,9 @@
     args = 'eta'
   [../]
   [./w_res]
-    type = SplitCHWResAniso
+    type = SplitCHWRes
     variable = w
     mob_name = M
-  [../]
-  [./anisotropy]
-    type = CHInterfaceAniso
-    variable = c
-    mob_name = M
-    kappa_name = kappa_c
   [../]
 
   [./time]
@@ -113,55 +104,24 @@
 []
 
 [Materials]
-  [./AHconsts]
+  [./Consts]
     type = GenericConstantMaterial
     block = 0
-    prop_names  = 'L kappa_eta'
-    prop_values = '1 2.2'
-  [../]
-  [./CHconsts]
-    type = GenericConstantMaterial
-    prop_names  = 'M kappa_c'
-    prop_values = '1'
-    block = 0
+    prop_names  = 'L M kappa_c'
+    prop_values = '1 1 1'
   [../]
   [./aniso]
     type = InterfaceOrientationMaterial
     block = 0
-    c = c
-    op = c
+    op = eta
   [../]
-  [./mobility]
-    type = ConstantAnisotropicMobility
-    block = 0
-    tensor = '1     1     0
-              1     1     0
-              0     0     0'
-    M_name = M
-  [../]
-
-  [./barrier]
-    type = BarrierFunctionMaterial
-    block = 0
-    eta = eta
-    g_order = SIMPLE
-  [../]
-
-  [./switching]
-    type = SwitchingFunctionMaterial
-    block = 0
-    function_name = h
-    eta = eta
-    h_orders = HIGH
-  [../]
-
   # Free energy of UO2 matrix
   [./free_energy_A]
     type = DerivativeParsedMaterial
     block = 0
     f_name = Fa
     args = 'c'
-    function = '300*(c^2)'
+    function = '(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -171,7 +131,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '300*((0.25-c)^2)'
+    function = '((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -187,6 +147,18 @@
     derivative_order = 2
     outputs = exodus
     output_properties = 'F dF/dc dF/deta d^2F/dc^2 d^2F/dcdeta d^2F/deta^2'
+  [../]
+
+  [./barrier]
+    type = BarrierFunctionMaterial
+    block = 0
+    eta = eta
+  [../]
+
+  [./switching]
+    type = SwitchingFunctionMaterial
+    block = 0
+    eta = eta
   [../]
 []
 
@@ -209,7 +181,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1500
+  num_steps = 1000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
@@ -221,5 +193,4 @@
 [Outputs]
   execute_on = 'initial timestep_end'
   exodus = true
-  csv = true
 []
