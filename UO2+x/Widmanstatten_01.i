@@ -29,7 +29,7 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 200
+    numbub = 100
     int_width = 0.1
     bubspac = 1.5
     radius = 0.5
@@ -42,7 +42,7 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 200
+    numbub = 100
     bubspac = 1.5
     radius = 0.5
     outvalue = 0.143
@@ -181,7 +181,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1000
+  num_steps = 1500
 
   [./TimeStepper]
   type = IterationAdaptiveDT
