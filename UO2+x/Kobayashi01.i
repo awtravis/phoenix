@@ -107,11 +107,11 @@
   [./Consts]
     type = GenericConstantMaterial
     block = 0
-    prop_names  = 'L M kappa_c'
-    prop_values = '1 1 1'
+    prop_names  = 'L   M kappa_c'
+    prop_values = '500 1 1'
   [../]
   [./aniso]
-    type = InterfaceOrientationMaterial
+    type = WidmanstattenMaterial
     block = 0
     op = eta
   [../]
@@ -184,7 +184,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 100
+  num_steps = 150
 
   [./TimeStepper]
   type = IterationAdaptiveDT

@@ -29,7 +29,7 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 100
+    numbub = 150
     int_width = 0.1
     bubspac = 1.5
     radius = 0.5
@@ -42,7 +42,7 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 100
+    numbub = 150
     bubspac = 1.5
     radius = 0.5
     outvalue = 0.143
@@ -153,12 +153,15 @@
     type = BarrierFunctionMaterial
     block = 0
     eta = eta
+    g_order = SIMPLE
   [../]
 
   [./switching]
     type = SwitchingFunctionMaterial
     block = 0
+    function_name = h
     eta = eta
+    h_orders = HIGH
   [../]
 []
 

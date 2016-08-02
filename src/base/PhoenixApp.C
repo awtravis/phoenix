@@ -5,6 +5,7 @@
 #include "keff.h"
 #include "MooseSyntax.h"
 #include "Micro.h"
+#include "WidmanstattenMaterial.h"
 
 template<>
 InputParameters validParams<PhoenixApp>()
@@ -48,6 +49,7 @@ void
 PhoenixApp::registerObjects(Factory & factory)
 {
   registerObject(keff);
+  registerObject(WidmanstattenMaterial);
 }
 
 // External entry point for dynamic syntax association

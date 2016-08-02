@@ -28,25 +28,25 @@
 
 [ICs]
   [./etaIC]
-    type = SmoothCircleIC
-    int_width = 0.01
-    radius = 3.0
+    type = MultiSmoothCircleIC
+    numbub = 100
+    int_width = 0.1
+    bubspac = 1.5
+    radius = 0.5
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
-    x1 = 25
-    y1 = 25
     block = 0
-  [../]
+    [../]
   [./concentrationIC]
-    type = SmoothCircleIC
+    type = MultiSmoothCircleIC
     variable = c
-    int_width = 0.01
-    radius = 3.0
+    int_width = 0.1
+    numbub = 100
+    bubspac = 1.5
+    radius = 0.5
     outvalue = 0.143
     invalue = 0.143
-    x1 = 25
-    y1 = 25
     block = 0
   [../]
 []
@@ -108,10 +108,10 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L M kappa_c'
-    prop_values = '1 1 1'
+    prop_values = '100 1 1'
   [../]
   [./aniso]
-    type = InterfaceOrientationMaterial
+    type = WidmanstattenMaterial
     block = 0
     op = eta
   [../]
@@ -184,7 +184,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 100
+  num_steps = 1000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
