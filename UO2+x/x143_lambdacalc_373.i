@@ -35,14 +35,14 @@
 
 [Variables]
   [./T]
-    initial_condition = 373
+    initial_condition = 368
   [../]
   [./Tx_AEH] #Temperature used for the x-component of the AEH solve
-    initial_condition = 373
+    initial_condition = 368
     scaling = 1.0e4 #Scales residual to improve convergence
   [../]
   [./Ty_AEH] #Temperature used for the y-component of the AEH solve
-    initial_condition = 373
+    initial_condition = 368
     scaling = 1.0e4  #Scales residual to improve convergence
   [../]
 []
@@ -88,13 +88,13 @@
     type = DirichletBC
     variable = T
     boundary = left
-    value = 373
+    value = 368
   [../]
   [./right_flux] #Set heat flux on the right side
     type = NeumannBC
     variable = T
     boundary = right
-    value = 1e-6
+    value = 7e-7
   [../]
   [./Periodic]
     [./all]
@@ -105,13 +105,13 @@
   [./fix_x] #Fix Tx_AEH at a single point
     type = DirichletBC
     variable = Tx_AEH
-    value = 373
+    value = 368
     boundary = 100
   [../]
   [./fix_y] #Fix Ty_AEH at a single point
     type = DirichletBC
     variable = Ty_AEH
-    value = 373
+    value = 368
     boundary = 100
   [../]
 []
@@ -141,9 +141,9 @@
     # on the right boundary
     type = ThermalConductivity
     variable = T
-    flux = 1e-6
+    flux = 7e-7
     length_scale = 1e-06
-    T_hot = 373
+    T_hot = 368
     dx = 50
     boundary = right
   [../]
