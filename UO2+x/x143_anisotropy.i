@@ -29,7 +29,7 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 100
+    numbub = 200
     int_width = 0.1
     bubspac = 2
     radius = 0.5
@@ -42,7 +42,7 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 100
+    numbub = 200
     bubspac = 2
     radius = 0.5
     outvalue = 0.143
