@@ -122,7 +122,7 @@
     type = ParsedMaterial
     block = 0
     constant_names = 'length_scale k_b k_p2'
-    constant_expressions = '1e-6 9.731 1.4'
+    constant_expressions = '1e-06 9.731 1.4'
     function = '(((1-eta)^2)*(k_b*length_scale))+(((eta)^2)*(k_p2*length_scale))'
     outputs = exodus
     f_name = thermal_conductivity
