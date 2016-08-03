@@ -35,14 +35,14 @@
 
 [Variables]
   [./T]
-    initial_condition = 323
+    initial_condition = 373
   [../]
   [./Tx_AEH] #Temperature used for the x-component of the AEH solve
-    initial_condition = 323
+    initial_condition = 373
     scaling = 1.0e4 #Scales residual to improve convergence
   [../]
   [./Ty_AEH] #Temperature used for the y-component of the AEH solve
-    initial_condition = 323
+    initial_condition = 373
     scaling = 1.0e4  #Scales residual to improve convergence
   [../]
 []
@@ -88,7 +88,7 @@
     type = DirichletBC
     variable = T
     boundary = left
-    value = 323
+    value = 373
   [../]
   [./right_flux] #Set heat flux on the right side
     type = NeumannBC
@@ -105,13 +105,13 @@
   [./fix_x] #Fix Tx_AEH at a single point
     type = DirichletBC
     variable = Tx_AEH
-    value = 323
+    value = 373
     boundary = 100
   [../]
   [./fix_y] #Fix Ty_AEH at a single point
     type = DirichletBC
     variable = Ty_AEH
-    value = 323
+    value = 373
     boundary = 100
   [../]
 []
@@ -122,7 +122,7 @@
     type = ParsedMaterial
     block = 0
     constant_names = 'length_scale k_b k_p2'
-    constant_expressions = '1e-6 9.066 1.4'
+    constant_expressions = '1e-6 8.469 1.4'
     function = '(((1-eta)^2)*(k_b*length_scale))+(((eta)^2)*(k_p2*length_scale))'
     outputs = exodus
     f_name = thermal_conductivity
@@ -143,7 +143,7 @@
     variable = T
     flux = 1e-6
     length_scale = 1e-06
-    T_hot = 323
+    T_hot = 373
     dx = 50
     boundary = right
   [../]
