@@ -115,6 +115,7 @@
     block = 0
     op = eta
   [../]
+
   # Free energy of UO2 matrix
   [./free_energy_A]
     type = DerivativeParsedMaterial
@@ -135,7 +136,6 @@
     derivative_order = 2
     enable_jit = true
   [../]
-
   [./free_energy]
     type = DerivativeTwoPhaseMaterial
     block = 0
