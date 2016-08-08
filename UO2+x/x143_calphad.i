@@ -29,7 +29,7 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 200
+    numbub = 100
     int_width = 0.1
     bubspac = 2
     radius = 0.5
@@ -42,11 +42,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 200
+    numbub = 100
     bubspac = 2
     radius = 0.5
-    outvalue = 0.143
-    invalue = 0.143
+    outvalue = 2.0
+    invalue = 2.0
     block = 0
   [../]
 []
@@ -107,8 +107,8 @@
   [./Consts]
     type = GenericConstantMaterial
     block = 0
-    prop_names  = 'L  M kappa_c'
-    prop_values = '10 1 1'
+    prop_names  = 'L M kappa_c'
+    prop_values = '1 1 1'
   [../]
   [./aniso]
     type = WidmanstattenMaterial
@@ -121,7 +121,9 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '(c^2)'
+    constant_names = 'T'
+    constant_expressions = '913'
+    function = '(2*c^(2) - 11*c + 15) * (-1118940.2 + (554.00559*T)) - (93.268*T*log((T))) + (1.01704354*(10^(-2))*(T^(2))) - (2.03335671*(10^(-6))*(T^(3))) + (1091073.7*(T^(-1)))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -131,7 +133,9 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '((0.25-c)^2)'
+    constant_names = 'T'
+    constant_expressions = '913'
+    function = '(2.25 - c^(2)) * T # * ((-4621329.3) + (1786.83274*T)) - (311.20912*T*log(T)) - (0.0311301013*T*pow(2)) + (1741269.49*T*pow(-1)) * c*log(c))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -142,7 +146,7 @@
     f_name = F
     fa_name = Fa
     fb_name = Fb
-    args = 'c'
+    args = 'c '
     eta = eta
     derivative_order = 2
     outputs = exodus
@@ -184,11 +188,11 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 2000
+  num_steps = 1000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
-  dt = .001 # Initial time step.
+  dt = 1e-9 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
 []

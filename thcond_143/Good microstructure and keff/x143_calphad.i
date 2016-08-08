@@ -24,12 +24,15 @@
     order = FIRST
     family = LAGRANGE
   [../]
+  [./T]
+    initial_condition = 913
+  [../]
 []
 
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 200
+    numbub = = 100
     int_width = 0.1
     bubspac = 2
     radius = 0.5
@@ -37,16 +40,16 @@
     variable = eta
     invalue = 1 #U4O9
     block = 0
-  [../]
+    [../]
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 200
+    numbub = 100
     bubspac = 2
     radius = 0.5
-    outvalue = 0.143
-    invalue = 0.143
+    outvalue = 2.00
+    invalue = 2.00
     block = 0
   [../]
 []
@@ -108,7 +111,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L  M kappa_c'
-    prop_values = '10 1 1'
+    prop_values = '1 1 1'
   [../]
   [./aniso]
     type = WidmanstattenMaterial
@@ -120,8 +123,10 @@
     type = DerivativeParsedMaterial
     block = 0
     f_name = Fa
-    args = 'c'
-    function = '(c^2)'
+    args = 'c T'
+    constant_names = R
+    constant_expressions = 8.31441
+    function = '((-2*c)+5) * (-c+3) * (-1118940.2 + (554.00559*T) - (93.268*T*ln((T))) + (1.01704354*(10**-2)*T**2) - (2.03335671*(10**-6)*T**3) + (1091073.7*T**-1)) + (R*T*((2*c-5)*ln(2c-5)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -130,8 +135,10 @@
     type = DerivativeParsedMaterial
     block = 0
     f_name = Fb
-    args = 'c'
-    function = '((0.25-c)^2)'
+    args = 'c T'
+    constant_names = R
+    constant_expressions = 8.31441
+    function = '((-4621329.3) + (1786.83274*T) - (311.20912*T*ln(T)) - (0.0311301013*T**2) + (1741269.49*T**-1)) - (R*T*(c*ln(c)))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -184,7 +191,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 2000
+  num_steps = 100
 
   [./TimeStepper]
   type = IterationAdaptiveDT
