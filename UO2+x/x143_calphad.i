@@ -159,9 +159,13 @@
     block = 0
     f_name = Fb
     args = 'c'
-    constant_names = 'T'
-    constant_expressions = '913'
-    function = '((c)^2) # ((-4621329.3) + (1786.83274*T) - (311.20912*T*log(T)) - (0.0311301013*T^(2)) + (1741269.49*T^(-1)) + c*log(c))'
+    constant_names = 'T
+                      R
+                      G_U4O9'
+    constant_expressions = '913
+                            8.3144598
+                            ((-4621329.3)+(1786.83274*T)-(311.20912*T*log(T))-(0.0311301013*T^(2))+(1741269.49*T^(-1)))'
+    function = '((((0.5*c)^2)*(G_U4O9)) + (((0.5*c)^2)*(G_U4O9)))'
     derivative_order = 2
     enable_jit = true
   [../]
