@@ -116,6 +116,21 @@
     op = eta
   [../]
 
+  [./Functions]
+    type = GenericFunctionMaterial
+    block = 0
+    func_names = 'y_U4
+                  y_U5
+                  y_Va
+                  y_O2
+                  G_exc_UO2'
+    func_values = '(1-(2*c))
+                  (2*c)
+                  (1-c)
+                  (c)
+                  (y_U4*y_U5*L_U4_U5)'
+    args = 'c'
+  [../]
   # Free energy of UO2 matrix
   [./free_energy_A]
     type = DerivativeParsedMaterial
@@ -136,20 +151,22 @@
     # 11) L_U4_U5 = free energy term for U4+ and U5+
     # 12) G_exc_UO2 = excess Gibbs energy for UO2+x
     constant_names =       'T
-                            R
-                            G_gas_O
-                            G_U4_O2_Va
-                            G_U4_O2_O2
-                            G_U5_O2_Va
-                            G_U5_O2_O2'
+                                     R
+                                     G_gas_O
+                                     G_U4_O2_Va
+                                     G_U4_O2_O2
+                                     G_U5_O2_Va
+                                     G_U5_O2_O2
+                                     L_U4_U5'
     constant_expressions = '913
-                            8.3144598
-                            ((-3480.870)-(25.503038*T)-(11.136*T*log(T))-(5.09888*(10^(-3)*(T^(2))))+(0.661846*(10^(-6))*(T^(3)))-(38365*(T^(-1))))
-                            ((-1118940.2)+(554.00559*T)-(93.268*T*log(T))+(1.01704354*(10^(-2))*(T^(2)))-(2.03335671*(10^(-6))*(T^(3)))+(1091073.7*(T^(-1))))
-                            (G_U4_O2_Va+G_gas_O)
-                            ((G_U4_O2_Va)-(58351.62)+(39.67611*T)+(0.69315*R*T))
-                            (G_U5_O2_Va+G_gas_O)'
-    function = '(((1-(2*c))*(1-c)*G_U4_O2_Va) + (((1-(2*c))*(c)*G_U4_O2_O2)) + ((2*c)*(1-c)*G_U5_O2_Va) + ((2*c)*(c)*G_U5_O2_O2))'
+                                 8.3144598
+                                 ((-3480.870)-(25.503038*T)-(11.136*T*log(T))-(5.09888*(10^(-3)*(T^(2))))+(0.661846*(10^(-6))*(T^(3)))-(38365*(T^(-1))))
+                                 ((-1118940.2)+(554.00559*T)-(93.268*T*log(T))+(1.01704354*(10^(-2))*(T^(2)))-(2.03335671*(10^(-6))*(T^(3)))+(1091073.7*(T^(-1))))
+                                 (G_U4_O2_Va+G_gas_O)
+                                 ((G_U4_O2_Va)-(58351.62)+(39.67611*T)+(0.69315*R*T))
+                                 (G_U5_O2_Va+G_gas_O)
+                                 (-124936.9-(21.6838*T))'
+    function = '((y_U4*y_Va*G_U4_O2_Va) + (y_U4*y_O2*G_U4_O2_O2) + (y_U5*y_Va*G_U5_O2_Va) + (y_U5*y_O2*G_U5_O2_O2) + (R*T*(y_U4*log(y_U4)+(y_U5*log(y_U5)))) + (R*T*(y_O2*log(y_O2)+(y_Va*log(y_Va)))) + (G_exc_UO2))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -161,7 +178,7 @@
     args = 'c'
     constant_names = 'T'
     constant_expressions = '913'
-    function = '((c)^2) # ((-4621329.3) + (1786.83274*T) - (311.20912*T*log(T)) - (0.0311301013*T^(2)) + (1741269.49*T^(-1)) + c*log(c))'
+    function = '((0.25 - c)^2) # ((-4621329.3) + (1786.83274*T) - (311.20912*T*log(T)) - (0.0311301013*T^(2)) + (1741269.49*T^(-1)) + c*log(c))'
     derivative_order = 2
     enable_jit = true
   [../]

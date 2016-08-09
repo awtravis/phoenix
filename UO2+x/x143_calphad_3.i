@@ -122,34 +122,10 @@
     block = 0
     f_name = Fa
     args = 'c'
-    # 1) Temperature in Kelvin (K)
-    # 2) R is gas constant in J/mol/K
-    # 3) y_U4 = site fraction of U4+ as a function of oxygen concentration
-    # 4) y_U5 = site fraction of U5+ as a function of oxygen concentration
-    # 5) y_Va = site fraction of Vacancies on the interstitial site
-    # 6) y_O2 = site fraction of oxygen ion on the interstitial site
-    # 7) G_gas_0 = Gibss free energy of 1/2 mole of gaseous O2 (A.T. Dinsdale SGTE 1991)
-    # 8) G_U4_O2_Va = G^UO2+x _U4+_O2-_Va
-    # 9) G_U4_O2_O2 = G^UO2+x _U4+_O2-_O2-
-    # 10) G_U5_O2_Va = G^UO2+x _U5+_O2-_Va
-    # 10) G_U5_O2_O2 = G^UO2+x _U5+_O2-_O2-
-    # 11) L_U4_U5 = free energy term for U4+ and U5+
-    # 12) G_exc_UO2 = excess Gibbs energy for UO2+x
-    constant_names =       'T
-                            R
-                            G_gas_O
-                            G_U4_O2_Va
-                            G_U4_O2_O2
-                            G_U5_O2_Va
-                            G_U5_O2_O2'
-    constant_expressions = '913
-                            8.3144598
-                            ((-3480.870)-(25.503038*T)-(11.136*T*log(T))-(5.09888*(10^(-3)*(T^(2))))+(0.661846*(10^(-6))*(T^(3)))-(38365*(T^(-1))))
-                            ((-1118940.2)+(554.00559*T)-(93.268*T*log(T))+(1.01704354*(10^(-2))*(T^(2)))-(2.03335671*(10^(-6))*(T^(3)))+(1091073.7*(T^(-1))))
-                            (G_U4_O2_Va+G_gas_O)
-                            ((G_U4_O2_Va)-(58351.62)+(39.67611*T)+(0.69315*R*T))
-                            (G_U5_O2_Va+G_gas_O)'
-    function = '(((1-(2*c))*(1-c)*G_U4_O2_Va) + (((1-(2*c))*(c)*G_U4_O2_O2)) + ((2*c)*(1-c)*G_U5_O2_Va) + ((2*c)*(c)*G_U5_O2_O2))'
+    material_property_names = 'T R'
+    material_property_values = '913 8.3145'
+    function = '((-1185478*(2*(c^2)-(3*c)+1)) + (-1285338.6*((-2*(c^2))+c)) + (-1202343.5*((2*c)*(c-1))) + (-1302204.1*(2*(c^2))) + (R*T*((1-(2*c))*log((1-(2*c)))+((2*c)*log(2*c)))) + (R*T*((2*c)*log(2*c)+((1-c)*log(1-c))))
+    + ((1-(2*c))*(2*c)*-144734.21))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -161,7 +137,7 @@
     args = 'c'
     constant_names = 'T'
     constant_expressions = '913'
-    function = '((c)^2) # ((-4621329.3) + (1786.83274*T) - (311.20912*T*log(T)) - (0.0311301013*T^(2)) + (1741269.49*T^(-1)) + c*log(c))'
+    function = '((0.25 - c)^2) # ((-4621329.3) + (1786.83274*T) - (311.20912*T*log(T)) - (0.0311301013*T^(2)) + (1741269.49*T^(-1)) + c*log(c))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -217,7 +193,7 @@
 
   [./TimeStepper]
   type = IterationAdaptiveDT
-  dt = 1e-9 # Initial time step.
+  dt = 1e-20 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
 []
