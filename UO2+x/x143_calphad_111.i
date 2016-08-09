@@ -29,7 +29,7 @@
   [./etaIC]
     type = MultiSmoothCircleIC
     numbub = 100
-    int_width = 0.25
+    int_width = 0.1
     bubspac = 2
     radius = 0.5
     outvalue = 0 # UO2
@@ -40,7 +40,7 @@
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
-    int_width = 0.25
+    int_width = 0.1
     numbub = 100
     bubspac = 2
     radius = 0.5
@@ -141,17 +141,15 @@
                             G_U4_O2_Va
                             G_U4_O2_O2
                             G_U5_O2_Va
-                            G_U5_O2_O2
-                            L_U4_U5'
+                            G_U5_O2_O2'
     constant_expressions = '913
                             8.3144598
                             ((-3480.870)-(25.503038*T)-(11.136*T*log(T))-(5.09888*(10^(-3)*(T^(2))))+(0.661846*(10^(-6))*(T^(3)))-(38365*(T^(-1))))
                             ((-1118940.2)+(554.00559*T)-(93.268*T*log(T))+(1.01704354*(10^(-2))*(T^(2)))-(2.03335671*(10^(-6))*(T^(3)))+(1091073.7*(T^(-1))))
                             (G_U4_O2_Va+G_gas_O)
                             ((G_U4_O2_Va)-(58351.62)+(39.67611*T)+(0.69315*R*T))
-                            (G_U5_O2_Va+G_gas_O)
-                            ((-124936.9)-(21.6838*T))'
-    function = '(((1-(2*c))*(1-c)*G_U4_O2_Va) + (((1-(2*c))*(c)*G_U4_O2_O2)) + (((2*c)*(1-c)*G_U5_O2_Va) + (((2*c)*(c)*G_U5_O2_O2))) + ((1-(2*c))*(2*c)*L_U4_U5))'
+                            (G_U5_O2_Va+G_gas_O)'
+    function = '(((1-(2*c))*(1-c)*G_U4_O2_Va) + (((1-(2*c))*(c)*G_U4_O2_O2)) + ((2*c)*(1-c)*G_U5_O2_Va) + ((2*c)*(c)*G_U5_O2_O2))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -167,7 +165,7 @@
     constant_expressions = '913
                             8.3144598
                             ((-4621329.3)+(1786.83274*T)-(311.20912*T*log(T))-(0.0311301013*T^(2))+(1741269.49*T^(-1)))'
-    function = '(((0.5*c)*(G_U4O9)) + ((0.5*c)*(G_U4O9)) + (R*T*(((0.5)*log(0.5))+((0.5)*log(0.5)))))'
+    function = '(((0.5)*(G_U4O9)) + ((0.5)*(G_U4O9)) - (R*T*((0.5*log(0.5))+(0.5*log(0.5)))))'
     derivative_order = 2
     enable_jit = true
   [../]
