@@ -7,7 +7,6 @@
   ymin = 0
   xmax = 50
   ymax = 50
-  block = 0
   elem_type = QUAD4
 []
 
@@ -107,8 +106,8 @@
   [./Consts]
     type = GenericConstantMaterial
     block = 0
-    prop_names  = 'L  M kappa_c'
-    prop_values = '10 1 1'
+    prop_names  = 'L M kappa_c'
+    prop_values = '1 1 1'
   [../]
   [./aniso]
     type = WidmanstattenMaterial
@@ -161,7 +160,7 @@
     block = 0
     function_name = h
     eta = eta
-    h_orders = HIGH
+    h_order = SIMPLE
   [../]
 []
 
@@ -184,7 +183,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 2000
+  num_steps = 1000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
