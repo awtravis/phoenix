@@ -108,7 +108,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L M kappa_c'
-    prop_values = '10 1 1'
+    prop_values = '1 1 1'
   [../]
   [./aniso]
     type = WidmanstattenMaterial
@@ -133,19 +133,11 @@
     # 12) G_exc_UO2 = excess Gibbs energy for UO2+x
     constant_names =       'T
                             R
-                            G_gas_O
-                            G_U4_O2_Va
-                            G_U4_O2_O2
-                            G_U5_O2_Va
-                            G_U5_O2_O2'
+                            G_U4_O2_Va'
     constant_expressions = '913
                             8.3144598
-                            ((-3480.870)-(25.503038*T)-(11.136*T*log(T))-(5.09888*(10^(-3)*(T^(2))))+(0.661846*(10^(-6))*(T^(3)))-(38365*(T^(-1))))
-                            ((-1118940.2)+(554.00559*T)-(93.268*T*log(T))+(1.01704354*(10^(-2))*(T^(2)))-(2.03335671*(10^(-6))*(T^(3)))+(1091073.7*(T^(-1))))
-                            (G_U4_O2_Va+G_gas_O)
-                            ((G_U4_O2_Va)-(58351.62)+(39.67611*T)+(0.69315*R*T))
-                            (G_U5_O2_Va+G_gas_O)'
-    function = '(((1-(2*c))*(1-c)*G_U4_O2_Va) + ((1-(2*c))*(c)*G_U4_O2_O2) + ((2*c)*(1-c)*G_U5_O2_Va) + (((2*c)*(c)*G_U5_O2_O2)))'
+                            ((-1118940.2)+(554.00559*T)-(93.268*T*log(T))+(1.01704354*(10^(-2))*(T^(2)))-(2.03335671*(10^(-6))*(T^(3)))+(1091073.7*(T^(-1))))'
+    function = '((c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -161,7 +153,7 @@
     constant_expressions = '913
                             8.3144598
                             ((-4621329.3)+(1786.83274*T)-(311.20912*T*log(T))-(0.0311301013*T^(2))+(1741269.49*T^(-1)))'
-    function = '(((-((0.25-c)+1)^2)*(G_U4O9))+(R*T*(((0.5)*log(0.5))+((0.5)*log(0.5)))))'
+    function = '((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -212,7 +204,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 2500
+  num_steps = 1000
 
   [./TimeStepper]
   type = IterationAdaptiveDT

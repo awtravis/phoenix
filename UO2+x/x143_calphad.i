@@ -167,7 +167,7 @@
     constant_expressions = '913
                             8.3144598
                             ((-4621329.3)+(1786.83274*T)-(311.20912*T*log(T))-(0.0311301013*T^(2))+(1741269.49*T^(-1)))'
-    function = '(-((0.25-c)^2)*(((0.5)*(G_U4O9)) + ((0.5)*(G_U4O9)) + (R*T*(((0.5)*log(0.5))+((0.5)*log(0.5))))))'
+    function = '((-((0.25-c)+1)^2)*(((0.5)*(G_U4O9)) + ((0.5)*(G_U4O9)) + (R*T*(((0.5)*log(0.5))+((0.5)*log(0.5))))))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -220,7 +220,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1000
+  num_steps = 2000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
