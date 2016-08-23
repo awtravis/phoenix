@@ -28,7 +28,7 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 100
+    numbub = 150
     int_width = 0.25
     bubspac = 2
     radius = 0.5
@@ -41,7 +41,7 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.25
-    numbub = 100
+    numbub = 150
     bubspac = 2
     radius = 0.5
     outvalue = 0.143
@@ -135,7 +135,11 @@
     # 10) G_U5_O2_O2 = G^UO2+x _U5+_O2-_O2-
     # 11) L_U4_U5 = free energy term for U4+ and U5+
     # 12) G_exc_UO2 = excess Gibbs energy for UO2+x
-    function = '(((1-(2*c))*(1-c)) + ((1-(2*c))*(-c)) + (-(2*c)*(1-c)) + ((2*c)*(c)))'
+    constant_names =       'T
+                            R'
+    constant_expressions = '913
+                            8.3144598'
+    function = '((((1-(2*c))*(1-c)) + ((1-(2*c))*(-c)) + (-(2*c)*(1-c)) + ((2*c)*(c))) + ((R*T)*((((1-(2*c))*log(1-(2*c)))+((2*c)*log(2*c))) + (((1-c)*log((1-c)))+((c)*log(c))))))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -198,11 +202,11 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 2000
+  num_steps = 1500
 
   [./TimeStepper]
   type = IterationAdaptiveDT
-  dt = 1e-10 # Initial time step.
+  dt = 1e-8 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
 []

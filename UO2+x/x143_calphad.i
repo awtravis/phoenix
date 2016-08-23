@@ -108,7 +108,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L   M kappa_c'
-    prop_values = '100 1 1'
+    prop_values = '1000 1 1'
   [../]
   [./aniso]
     type = WidmanstattenMaterial
@@ -151,7 +151,7 @@
                             ((G_U4_O2_Va)-(58351.62)+(39.67611*T)+(0.69315*R*T))
                             (G_U5_O2_Va+G_gas_O)
                             ((-124936.9)-(21.6838*T))'
-    function = '(((1-(2*c))*(1-c)*G_U4_O2_Va) + (((1-(2*c))*(c)*G_U4_O2_O2)) + (((2*c)*(1-c)*G_U5_O2_Va) + (((2*c)*(c)*G_U5_O2_O2))) + (R*T*(((1-(2*c))*log((1-(2*c))))+(((2*c)*log(2*c))))) + (R*T*(((c)*log((c)))+(((1-c)*log(1-c))))) + ((1-(2*c))*(2*c)*L_U4_U5))'
+    function = '(((1-(2*c))*(1-c)*G_U4_O2_Va) + (((1-(2*c))*(-c)*G_U4_O2_O2)) + ((-(2*c)*(1-c)*G_U5_O2_Va) + (((2*c)*(c)*G_U5_O2_O2))) + (R*T*(((1-(2*c))*log((1-(2*c))))+(((2*c)*log(2*c))))) + (R*T*(((c)*log((c)))+(((1-c)*log(1-c))))) + ((1-(2*c))*(2*c)*L_U4_U5))'
     derivative_order = 2
     enable_jit = true
   [../]
