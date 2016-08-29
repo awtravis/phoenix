@@ -44,8 +44,8 @@
     numbub = 100
     bubspac = 2
     radius = 0.5
-    outvalue = 0.02
-    invalue = 0.02
+    outvalue = 0.05
+    invalue = 0.05
     block = 0
   [../]
 []
