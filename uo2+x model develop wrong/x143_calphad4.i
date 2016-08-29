@@ -28,21 +28,21 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 100
+    numbub = 150
     int_width = 0.25
-    bubspac = 2
+    bubspac = 2.0
     radius = 0.5
-    outvalue = 0 # UO2
+    outvalue = 1 # UO2
     variable = eta
-    invalue = 1 #U4O9
+    invalue = 0 #U4O9
     block = 0
   [../]
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.25
-    numbub = 100
-    bubspac = 2
+    numbub = 150
+    bubspac = 2.0
     radius = 0.5
     outvalue = 0.143
     invalue = 0.143
@@ -151,7 +151,7 @@
                             ((G_U4_O2_Va)-(58351.62)+(39.67611*T)+(0.69315*R*T))
                             (G_U5_O2_Va+G_gas_O)
                             ((-124936.9)-(21.6838*T))'
-    function = '(((1-(2*c))*(1-c)*-G_U4_O2_Va) + ((1-(2*c))*(c)*G_U4_O2_O2) + ((2*c)*(1-c)*G_U5_O2_Va) + ((2*c)*(c)*-G_U5_O2_O2) + (R*T*(((1-(2*c))*plog((1-(2*c)),2.718))+(((2*c)*plog(2*c,2.718))))) + (R*T*(((c)*plog(c,2.718))+((1-c)*plog(1-c,2.718)))) + ((1-(2*c))*(2*c)*L_U4_U5))'
+    function = '((-(1-(2*c))*(1-c)*G_U4_O2_Va) + (((1-(2*c))*(c)*G_U4_O2_O2)) + (((2*c)*(1-c)*G_U5_O2_Va) + (((2*c)*(-c)*G_U5_O2_O2))))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -167,7 +167,7 @@
     constant_expressions = '913
                             8.3144598
                             ((-4621329.3)+(1786.83274*T)-(311.20912*T*log(T))-(0.0311301013*T^(2))+(1741269.49*T^(-1)))'
-    function = '(((-(0.25-c)^2)*(G_U4O9)) + (R*T*(((0.5)*log(0.5))+((0.5)*log(0.5)))))'
+    function = '(-((0.25-c)^2)*G_U4O9)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -214,17 +214,17 @@
   solve_type = 'NEWTON'
 
   l_max_its = 15
-  l_tol = 1.0e-10
+  l_tol = 1.0e-4
 
   nl_max_its = 10
-  nl_rel_tol = 1.0e-10
+  nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1000
+  num_steps = 3000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
-  dt = 1e-10 # Initial time step.
+  dt = 1e-8 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
 []
