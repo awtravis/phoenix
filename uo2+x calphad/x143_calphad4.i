@@ -32,9 +32,9 @@
     int_width = 0.25
     bubspac = 2.0
     radius = 0.5
-    outvalue = 0 # UO2
+    outvalue = 1 # UO2
     variable = eta
-    invalue = 1 #U4O9
+    invalue = 0 #U4O9
     block = 0
   [../]
   [./concentrationIC]
@@ -197,7 +197,7 @@
     block = 0
     function_name = h
     eta = eta
-    h_order = SIMPLE
+    h_order = HIGH
   [../]
 []
 
@@ -220,11 +220,11 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1000
+  num_steps = 3000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
-  dt = 1e-10 # Initial time step.
+  dt = 1e-8 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
 []
