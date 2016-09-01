@@ -28,7 +28,7 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 100
+    numbub = 50
     int_width = 0.25
     bubspac = 2
     radius = 0.5
@@ -41,11 +41,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.25
-    numbub = 100
+    numbub = 50
     bubspac = 2
     radius = 0.5
-    outvalue = 0.230
-    invalue = 0.230
+    outvalue = 0.143
+    invalue = 0.143
     block = 0
   [../]
 []
@@ -189,7 +189,7 @@
     type = BarrierFunctionMaterial
     block = 0
     eta = eta
-    g_order = SIMPLE
+    g_order = LOW
   [../]
 
   [./switching]
@@ -214,13 +214,13 @@
   solve_type = 'NEWTON'
 
   l_max_its = 15
-  l_tol = 1.0e-12
+  l_tol = 1.0e-10
 
   nl_max_its = 10
-  nl_rel_tol = 1.0e-12
+  nl_rel_tol = 1.0e-10
 
   start_time = 0.0
-  num_steps = 2000
+  num_steps = 1000
 
   [./TimeStepper]
   type = IterationAdaptiveDT

@@ -1,71 +1,52 @@
-# Simple test microstructure for multiple U4O9 domains in a UO2 matrix
-# Initial test condition with c = 0.10
-
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 25
-  ny = 25
-  nz = 0
+  nx = 100
+  ny = 100
   xmin = 0
-  xmax = 20
   ymin = 0
-  ymax = 20
+  xmax = 50
+  ymax = 50
   elem_type = QUAD4
-  uniform_refine = 2
 []
 
 [Variables]
-  # Oxygen concentration within the microstructure
+  [./eta]
+    order = FIRST
+    family = LAGRANGE
+  [../]
   [./c]
     order = FIRST
     family = LAGRANGE
   [../]
-  # Energy barrier
-  # Default value equal to 1
   [./w]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  # Phase field variable
-  [./eta]
     order = FIRST
     family = LAGRANGE
   [../]
 []
 
 [ICs]
-  # UO2 = 0.0 and U4O9 = 0.25
+  [./etaIC]
+    type = MultiSmoothCircleIC
+    numbub = 50
+    int_width = 0.25
+    bubspac = 2
+    radius = 0.5
+    outvalue = 0 # UO2
+    variable = eta
+    invalue = 1 #U4O9
+    block = 0
+  [../]
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
-    int_width = 0.1
-    numbub = 25
-    bubspac = 1.5
-    radius = 1.0
-    outvalue = 0.104
-    invalue = 0.104
+    int_width = 0.25
+    numbub = 50
+    bubspac = 2
+    radius = 0.5
+    outvalue = 0.143
+    invalue = 0.143
     block = 0
-  [../]
-  # UO2 = 0.0 and U4O9 = 1.0
-  [./etaIC]
-    type = MultiSmoothCircleIC
-    variable = eta
-    int_width = 0.1
-    numbub = 25
-    bubspac = 1.5
-    radius = 1.0
-    outvalue = 0
-    invalue = 1.0
-    block = 0
-  [../]
-[]
-
-[BCs]
-  [./Periodic]
-    [./All]
-      auto_direction = 'x y'
-    [../]
   [../]
 []
 
@@ -74,16 +55,22 @@
     type = TimeDerivative
     variable = eta
   [../]
-  [./ACBulk]
-    type = ACParsed
+  [./anisoACinterface1]
+    type = ACInterfaceKobayashi1
+    variable = eta
+    mob_name = L
+  [../]
+  [./anisoACinterface2]
+    type = ACInterfaceKobayashi2
+    variable = eta
+    mob_name = L
+  [../]
+  [./AllenCahn]
+    type = AllenCahn
     variable = eta
     args = c
+    mob_name = L
     f_name = F
-  [../]
-  [./ACInterface]
-    type = ACInterface
-    variable = eta
-    kappa_name = kappa_eta
   [../]
 
   [./c_res]
@@ -95,14 +82,8 @@
     args = 'eta'
   [../]
   [./w_res]
-    type = SplitCHWResAniso
+    type = SplitCHWRes
     variable = w
-    mob_name = M
-  [../]
-  [./anisotropic]
-    type = CHInterfaceAniso
-    variable = c
-    kappa_name = kappa_c
     mob_name = M
   [../]
 
@@ -113,40 +94,26 @@
   [../]
 []
 
+[BCs]
+  [./Periodic]
+    [./All]
+      auto_direction = 'x y'
+    [../]
+  [../]
+[]
+
 [Materials]
-  [./consts]
+  # Material properties for descirbing anisotropy of the system
+  [./Consts]
     type = GenericConstantMaterial
     block = 0
-    prop_names  = 'L kappa_eta'
-    prop_values = '1 1'
+    prop_names  = 'L M kappa_c'
+    prop_values = '1 1 1'
   [../]
-  [./consts2]
-    type = GenericConstantMaterial
-    prop_names  = 'kappa_c'
-    prop_values = '20'
+  [./aniso]
+    type = WidmanstattenMaterial
     block = 0
-  [../]
-
-  [./mobility]
-    type = ConstantAnisotropicMobility
-    M_name = M
-    block = 0
-    tensor = '.1 0 0
-              0 0 0
-              0 0 0'
-  [../]
-
-  [./switching]
-    type = SwitchingFunctionMaterial
-    block = 0
-    eta = eta
-    h_order = HIGH
-  [../]
-  [./barrier]
-    type = BarrierFunctionMaterial
-    block = 0
-    eta = eta
-    g_order = SIMPLE
+    op = eta
   [../]
 
   # Free energy of UO2 matrix
@@ -155,7 +122,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '100*(c^2)'
+    function = '(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -165,7 +132,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '100*((0.25-c)^2)'
+    function = '((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -182,6 +149,21 @@
     outputs = exodus
     output_properties = 'F dF/dc dF/deta d^2F/dc^2 d^2F/dcdeta d^2F/deta^2'
   [../]
+
+  [./barrier]
+    type = BarrierFunctionMaterial
+    block = 0
+    eta = eta
+    g_order = LOW
+  [../]
+
+  [./switching]
+    type = SwitchingFunctionMaterial
+    block = 0
+    function_name = h
+    eta = eta
+    h_order = HIGH
+  [../]
 []
 
 [Preconditioning]
@@ -197,21 +179,22 @@
   solve_type = 'NEWTON'
 
   l_max_its = 15
-  l_tol = 1.0e-4
+  l_tol = 1.0e-10
 
   nl_max_its = 10
-  nl_rel_tol = 1.0e-4
+  nl_rel_tol = 1.0e-10
 
   start_time = 0.0
-  num_steps = 300
+  num_steps = 1000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
-  dt = 1e-8 # Initial time step.  In this simulation it changes.
+  dt = 1e-10 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
 []
 
 [Outputs]
+  execute_on = 'initial timestep_end'
   exodus = true
 []

@@ -29,7 +29,7 @@
   [./etaIC]
     type = MultiSmoothCircleIC
     numbub = 100
-    int_width = 0.25
+    int_width = 0.1
     bubspac = 2
     radius = 0.5
     outvalue = 0 # UO2
@@ -40,12 +40,12 @@
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
-    int_width = 0.25
+    int_width = 0.1
     numbub = 100
     bubspac = 2
     radius = 0.5
-    outvalue = 0.230
-    invalue = 0.230
+    outvalue = 0.042
+    invalue = 0.042
     block = 0
   [../]
 []
@@ -143,7 +143,7 @@
                             G_U5_O2_Va
                             G_U5_O2_O2
                             L_U4_U5'
-    constant_expressions = '913
+    constant_expressions = '750
                             8.3144598
                             ((-3480.870)-(25.503038*T)-(11.136*T*log(T))-(5.09888*(10^(-3)*(T^(2))))+(0.661846*(10^(-6))*(T^(3)))-(38365*(T^(-1))))
                             ((-1118940.2)+(554.00559*T)-(93.268*T*log(T))+(1.01704354*(10^(-2))*(T^(2)))-(2.03335671*(10^(-6))*(T^(3)))+(1091073.7*(T^(-1))))
@@ -164,7 +164,7 @@
     constant_names = 'T
                       R
                       G_U4O9'
-    constant_expressions = '913
+    constant_expressions = '750
                             8.3144598
                             ((-4621329.3)+(1786.83274*T)-(311.20912*T*log(T))-(0.0311301013*T^(2))+(1741269.49*T^(-1)))'
     function = '(((-(0.25-c)^2)*(G_U4O9)) + (R*T*(((0.5)*log(0.5))+((0.5)*log(0.5)))))'
@@ -197,7 +197,7 @@
     block = 0
     function_name = h
     eta = eta
-    h_order = HIGH
+    h_order = SIMPLE
   [../]
 []
 
@@ -214,13 +214,13 @@
   solve_type = 'NEWTON'
 
   l_max_its = 15
-  l_tol = 1.0e-12
+  l_tol = 1.0e-10
 
   nl_max_its = 10
-  nl_rel_tol = 1.0e-12
+  nl_rel_tol = 1.0e-10
 
   start_time = 0.0
-  num_steps = 2000
+  num_steps = 1000
 
   [./TimeStepper]
   type = IterationAdaptiveDT

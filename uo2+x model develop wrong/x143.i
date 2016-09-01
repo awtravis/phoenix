@@ -122,7 +122,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '(((1-(2*c))*(1-c)) + ((1-(2*c))*(-c)) + (-(2*c)*(1-c)) + ((2*c)*(c)))'
+    function = '(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]

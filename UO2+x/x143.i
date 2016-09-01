@@ -1,13 +1,13 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 100
-  ny = 100
+  nx = 10
+  ny = 10
   xmin = 0
   ymin = 0
-  xmax = 50
-  ymax = 50
-  elem_type = QUAD4
+  xmax = 10
+  ymax = 10
+  element_refine = 3
 []
 
 [Variables]
@@ -27,25 +27,25 @@
 
 [ICs]
   [./etaIC]
-    type = MultiSmoothCircleIC
-    numbub = 100
-    int_width = 0.25
-    bubspac = 2
+    type = SmoothCircleIC
+    int_width = 0.1
     radius = 0.5
+    x1 = 5
+    y1 = 5
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
     block = 0
   [../]
   [./concentrationIC]
-    type = MultiSmoothCircleIC
-    variable = c
-    int_width = 0.25
-    numbub = 100
-    bubspac = 2
+    type = SmoothCircleIC
+    int_width = 0.1
     radius = 0.5
-    outvalue = 0.230
-    invalue = 0.230
+    x1 = 5
+    y1 = 5
+    outvalue = 0.143 # UO2
+    variable = c
+    invalue = 0.25 #U4O9
     block = 0
   [../]
 []
@@ -143,7 +143,7 @@
                             G_U5_O2_Va
                             G_U5_O2_O2
                             L_U4_U5'
-    constant_expressions = '913
+    constant_expressions = '750
                             8.3144598
                             ((-3480.870)-(25.503038*T)-(11.136*T*log(T))-(5.09888*(10^(-3)*(T^(2))))+(0.661846*(10^(-6))*(T^(3)))-(38365*(T^(-1))))
                             ((-1118940.2)+(554.00559*T)-(93.268*T*log(T))+(1.01704354*(10^(-2))*(T^(2)))-(2.03335671*(10^(-6))*(T^(3)))+(1091073.7*(T^(-1))))
@@ -164,7 +164,7 @@
     constant_names = 'T
                       R
                       G_U4O9'
-    constant_expressions = '913
+    constant_expressions = '750
                             8.3144598
                             ((-4621329.3)+(1786.83274*T)-(311.20912*T*log(T))-(0.0311301013*T^(2))+(1741269.49*T^(-1)))'
     function = '(((-(0.25-c)^2)*(G_U4O9)) + (R*T*(((0.5)*log(0.5))+((0.5)*log(0.5)))))'
@@ -197,7 +197,7 @@
     block = 0
     function_name = h
     eta = eta
-    h_order = HIGH
+    h_order = SIMPLE
   [../]
 []
 
@@ -210,22 +210,30 @@
 
 [Executioner]
   type = Transient
-  scheme = 'bdf2'
-  solve_type = 'NEWTON'
+  scheme = bdf2
+  solve_type = PJFNK
+  petsc_options_iname = '-pc_type -pc_hypre_type -ksp_gmres_restart'
+  petsc_options_value = 'hypre    boomeramg      31'
 
-  l_max_its = 15
-  l_tol = 1.0e-12
+  nl_abs_tol = 1e-10
+  nl_rel_tol = 1e-08
+  l_max_its = 30
 
-  nl_max_its = 10
-  nl_rel_tol = 1.0e-12
-
-  start_time = 0.0
-  num_steps = 2000
+  end_time = 1
 
   [./TimeStepper]
-  type = IterationAdaptiveDT
-  dt = 1e-10 # Initial time step.
-  optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
+    type = IterationAdaptiveDT
+    optimal_iterations = 6
+    iteration_window = 2
+    dt = 1e-8
+    growth_factor = 1.1
+    cutback_factor = 0.75
+  [../]
+  [./Adaptivity]
+    initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
+    refine_fraction = 0.7 # Fraction of high error that will be refined
+    coarsen_fraction = 0.1 # Fraction of low error that will coarsened
+    max_h_level = 5 # Max number of refinements used, starting from initial mesh (before uniform refinement)
   [../]
 []
 

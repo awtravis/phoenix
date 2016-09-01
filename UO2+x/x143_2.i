@@ -1,13 +1,15 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 100
-  ny = 100
+  nx = 10
+  ny = 10
   xmin = 0
   ymin = 0
-  xmax = 50
-  ymax = 50
+  xmax = 10
+  ymax = 10
+  distribution = DEFAULT
   elem_type = QUAD4
+  uniform_refine = 2
 []
 
 [Variables]
@@ -28,8 +30,8 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 100
-    int_width = 0.25
+    numbub = 5
+    int_width = 0.1
     bubspac = 2
     radius = 0.5
     outvalue = 0 # UO2
@@ -40,12 +42,12 @@
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
-    int_width = 0.25
-    numbub = 100
+    int_width = 0.1
+    numbub = 5
     bubspac = 2
     radius = 0.5
-    outvalue = 0.230
-    invalue = 0.230
+    outvalue = 0.143
+    invalue = 0.143
     block = 0
   [../]
 []
@@ -210,26 +212,36 @@
 
 [Executioner]
   type = Transient
-  scheme = 'bdf2'
-  solve_type = 'NEWTON'
-
-  l_max_its = 15
-  l_tol = 1.0e-12
-
-  nl_max_its = 10
-  nl_rel_tol = 1.0e-12
-
-  start_time = 0.0
-  num_steps = 2000
-
+  solve_type = NEWTON
+  l_max_its = 30
+  l_tol = 1e-6
+  nl_max_its = 50
+  nl_abs_tol = 1e-9
+  end_time = 1
+  petsc_options_iname = '-pc_type -ksp_grmres_restart -sub_ksp_type
+                         -sub_pc_type -pc_asm_overlap'
+  petsc_options_value = 'asm      31                  preonly
+                         ilu          1'
   [./TimeStepper]
-  type = IterationAdaptiveDT
-  dt = 1e-10 # Initial time step.
-  optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
+    type = IterationAdaptiveDT
+    dt = 1e-10
+    cutback_factor = 0.8
+    growth_factor = 1.5
+    optimal_iterations = 7
+  [../]
+  [./Adaptivity]
+    coarsen_fraction = 0.1
+    refine_fraction = 0.7
+    max_h_level = 2
   [../]
 []
 
 [Outputs]
-  execute_on = 'initial timestep_end'
   exodus = true
+  console = true
+  csv = true
+  [./console]
+    type = Console
+    max_rows = 10
+  [../]
 []

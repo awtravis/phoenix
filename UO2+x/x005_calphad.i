@@ -19,7 +19,7 @@
     order = FIRST
     family = LAGRANGE
   [../]
-  [./w]
+  [./w]å
     order = FIRST
     family = LAGRANGE
   [../]

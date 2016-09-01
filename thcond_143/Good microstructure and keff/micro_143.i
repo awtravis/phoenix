@@ -11,14 +11,10 @@
   elem_type = QUAD4
 []
 
-[GlobalParams]
-  penalty = 1e-8
-[]
-
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 60
+    numbub = 50
     int_width = 0.1
     bubspac = 5.0
     radius = 1.5
@@ -31,7 +27,7 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 60
+    numbub = 50
     bubspac = 5.0
     radius = 1.5
     outvalue = 0.143
@@ -125,7 +121,7 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '1e-10'
+    prop_values = '1'
     block = 0
   [../]
   [./aniso]
@@ -136,9 +132,9 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '0.05     0.02       0
-              0.02     0.1         0
-              0        0        0'
+    tensor = '1    0    0
+              0    1    0
+              0    0    0'
     M_name = M
   [../]
 
