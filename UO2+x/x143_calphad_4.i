@@ -166,7 +166,7 @@
     constant_expressions = '913
                             8.3144598
                             ((-4621329.3)+(1786.83274*T)-(311.20912*T*log(T))-(0.0311301013*T^(2))+(1741269.49*T^(-1)))'
-    function = '(((-(0.25-c)^2)*(G_U4O9)) + (R*T*(((0.5)*log(0.5))+((0.5)*log(0.5)))))'
+    function = '((((-(0.25-c)^2)+1)*(G_U4O9)) + (R*T*(((0.5)*plog(0.5,2.718))+((0.5)*plog(0.5,2.718)))))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -225,13 +225,6 @@
   type = IterationAdaptiveDT
   dt = 1e-10 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
-  [../]
-  
-  [./Adaptivity]
-    initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
-    refine_fraction = 0.7 # Fraction of high error that will be refined
-    coarsen_fraction = 0.1 # Fraction of low error that will coarsened
-    max_h_level = 3 # Max number of refinements used, starting from initial mesh (before uniform refinement)
   [../]
 []
 

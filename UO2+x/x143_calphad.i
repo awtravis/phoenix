@@ -1,15 +1,12 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 100
-  ny = 100
+  nx = 50
+  ny = 50
   xmin = 0
   ymin = 0
   xmax = 50
   ymax = 50
-  distribution = DEFAULT
-  elem_type = QUAD4
-  uniform_refine = 2
 []
 
 [Variables]
@@ -153,7 +150,7 @@
                             ((G_U4_O2_Va)-(58351.62)+(39.67611*T)+(0.69315*R*T))
                             (G_U5_O2_Va+G_gas_O)
                             ((-124936.9)-(21.6838*T))'
-    function = '(((1-(2*c))*(1-c)*-G_U4_O2_Va) + ((1-(2*c))*(c)*G_U4_O2_O2) + ((2*c)*(1-c)*G_U5_O2_Va) + ((2*c)*(c)*-G_U5_O2_O2) + (R*T*(((1-(2*c))*plog((1-(2*c)),2.718))+(((2*c)*plog(2*c,2.718))))) + (R*T*(((c)*plog(c,2.718))+((1-c)*plog(1-c,2.718)))) + ((1-(2*c))*(2*c)*L_U4_U5))'
+    function = '((((1-(2*c))*(1-c)*G_U4_O2_Va) + ((1-(2*c))*(c)*G_U4_O2_O2) + ((2*c)*(1-c)*G_U5_O2_Va) + ((2*c)*(c)*G_U5_O2_O2)) + (R*T*((((1-(2*c))*plog((1-(2*c)),2.718))+(((2*c)*plog(2*c,2.718)))) + (((c)*plog(c,2.718))+((1-c)*plog(1-c,2.718))))) + ((1-(2*c))*(2*c)*L_U4_U5))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -169,7 +166,7 @@
     constant_expressions = '913
                             8.3144598
                             ((-4621329.3)+(1786.83274*T)-(311.20912*T*log(T))-(0.0311301013*T^(2))+(1741269.49*T^(-1)))'
-    function = '(((-(0.25-c)^2)*(G_U4O9)) + (R*T*(((0.5)*log(0.5))+((0.5)*log(0.5)))))'
+    function = '((0.25-c)^2) + (((G_U4O9)-(R*T*(((0.5)*log(0.5))+((0.5)*log(0.5)))))/4)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -212,36 +209,26 @@
 
 [Executioner]
   type = Transient
-  solve_type = NEWTON
-  l_max_its = 30
-  l_tol = 1e-6
-  nl_max_its = 50
-  nl_abs_tol = 1e-9
-  end_time = 1
-  petsc_options_iname = '-pc_type -ksp_grmres_restart -sub_ksp_type
-                         -sub_pc_type -pc_asm_overlap'
-  petsc_options_value = 'asm      31                  preonly
-                         ilu          1'
+  scheme = 'bdf2'
+  solve_type = 'NEWTON'
+
+  l_max_its = 15
+  l_tol = 1.0e-10
+
+  nl_max_its = 10
+  nl_rel_tol = 1.0e-10
+
+  start_time = 0.0
+  num_steps = 1000
+
   [./TimeStepper]
-    type = IterationAdaptiveDT
-    dt = 1e-10
-    cutback_factor = 0.8
-    growth_factor = 1.5
-    optimal_iterations = 7
-  [../]
-  [./Adaptivity]
-    coarsen_fraction = 0.1
-    refine_fraction = 0.7
-    max_h_level = 2
+  type = IterationAdaptiveDT
+  dt = 1e-10 # Initial time step.
+  optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
 []
 
 [Outputs]
+  execute_on = 'initial timestep_end'
   exodus = true
-  console = true
-  csv = true
-  [./console]
-    type = Console
-    max_rows = 10
-  [../]
 []

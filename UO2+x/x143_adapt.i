@@ -1,12 +1,12 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 50
-  ny = 50
+  nx = 25
+  ny = 25
   xmin = 0
   ymin = 0
-  xmax = 50
-  ymax = 50
+  xmax = 25
+  ymax = 25
 []
 
 [Variables]
@@ -27,9 +27,9 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 100
+    numbub = 50
     int_width = 0.25
-    bubspac = 2
+    bubspac = 1
     radius = 0.5
     outvalue = 0 # UO2
     variable = eta
@@ -40,8 +40,8 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.25
-    numbub = 100
-    bubspac = 2
+    numbub = 50
+    bubspac = 1
     radius = 0.5
     outvalue = 0.143
     invalue = 0.143
@@ -110,7 +110,7 @@
     prop_values = '1 1 1'
   [../]
   [./aniso]
-    type = WidmanstattenMaterial
+    type = InterfaceOrientationMaterial
     block = 0
     op = eta
   [../]
@@ -166,7 +166,7 @@
     constant_expressions = '913
                             8.3144598
                             ((-4621329.3)+(1786.83274*T)-(311.20912*T*log(T))-(0.0311301013*T^(2))+(1741269.49*T^(-1)))'
-    function = '(((-(0.25-c)^2)*(G_U4O9)) + (R*T*(((0.5)*log(0.5))+((0.5)*log(0.5)))))'
+    function = '((((-(0.25-c)^2)*(G_U4O9)) + (R*T*(((0.5)*log(0.5))+((0.5)*log(0.5))))))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -188,7 +188,7 @@
     type = BarrierFunctionMaterial
     block = 0
     eta = eta
-    g_order = SIMPLE
+    g_order = LOW
   [../]
 
   [./switching]
@@ -209,33 +209,35 @@
 
 [Executioner]
   type = Transient
-  scheme = 'bdf2'
-  solve_type = 'NEWTON'
+  scheme = bdf2
+  solve_type = PJFNK
+  petsc_options_iname = '-pc_type -pc_hypre_type -ksp_gmres_restart'
+  petsc_options_value = 'hypre    boomeramg      31'
 
-  l_max_its = 15
-  l_tol = 1.0e-10
+  nl_abs_tol = 1e-10
+  nl_rel_tol = 1e-08
+  l_max_its = 30
 
-  nl_max_its = 10
-  nl_rel_tol = 1.0e-10
-
-  start_time = 0.0
-  num_steps = 1000
+  end_time = 1e-5
 
   [./TimeStepper]
-  type = IterationAdaptiveDT
-  dt = 1e-10 # Initial time step.
-  optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
+    type = IterationAdaptiveDT
+    optimal_iterations = 6
+    iteration_window = 2
+    dt = 1e-8
+    growth_factor = 1.1
+    cutback_factor = 0.75
   [../]
-  
   [./Adaptivity]
     initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
     refine_fraction = 0.7 # Fraction of high error that will be refined
     coarsen_fraction = 0.1 # Fraction of low error that will coarsened
-    max_h_level = 3 # Max number of refinements used, starting from initial mesh (before uniform refinement)
+    max_h_level = 5 # Max number of refinements used, starting from initial mesh (before uniform refinement)
+    weight_names = 'c eta'
+    weight_values = '1 0.5'
   [../]
 []
 
 [Outputs]
-  execute_on = 'initial timestep_end'
   exodus = true
 []

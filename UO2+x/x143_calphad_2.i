@@ -1,13 +1,12 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 100
-  ny = 100
+  nx = 20
+  ny = 20
   xmin = 0
   ymin = 0
-  xmax = 50
-  ymax = 50
-  elem_type = QUAD4
+  xmax = 20
+  ymax = 20
 []
 
 [Variables]
@@ -28,20 +27,20 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 50
+    numbub = 25
     int_width = 0.25
     bubspac = 2
     radius = 0.5
-    outvalue = 0 # UO2
+    outvalue = 1 # UO2
     variable = eta
-    invalue = 1 #U4O9
+    invalue = 0 #U4O9
     block = 0
   [../]
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.25
-    numbub = 50
+    numbub = 25
     bubspac = 2
     radius = 0.5
     outvalue = 0.143
@@ -227,7 +226,6 @@
   dt = 1e-10 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
-[]
 
 [Outputs]
   execute_on = 'initial timestep_end'
