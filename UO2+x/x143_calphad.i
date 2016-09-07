@@ -27,22 +27,22 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 100
-    int_width = 0.1
-    bubspac = 2
-    radius = 0.5
-    outvalue = 0 # UO2
     variable = eta
+    numbub = 50
+    int_width = 0.1
+    bubspac = 2.5
+    radius = 1.0
+    outvalue = 0 # UO2
     invalue = 1 #U4O9
     block = 0
   [../]
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
+    numbub = 50
     int_width = 0.1
-    numbub = 100
-    bubspac = 2
-    radius = 0.5
+    bubspac = 2.5
+    radius = 1.0
     outvalue = 0.143
     invalue = 0.143
     block = 0
@@ -67,7 +67,7 @@
   [./AllenCahn]
     type = AllenCahn
     variable = eta
-    args = c
+    args = 'c'
     mob_name = L
     f_name = F
   [../]
@@ -102,7 +102,7 @@
 []
 
 [Materials]
-  # Material properties for descirbing anisotropy of the system
+  # Material properties for describing anisotropy of the system
   [./Consts]
     type = GenericConstantMaterial
     block = 0
@@ -144,13 +144,13 @@
                             L_U4_U5'
     constant_expressions = '913
                             8.3144598
-                            ((-3480.870)-(25.503038*T)-(11.136*T*log(T))-(5.09888*(10^(-3)*(T^(2))))+(0.661846*(10^(-6))*(T^(3)))-(38365*(T^(-1))))
+                            ((-3480.870)-(25.503038*T)-(11.136*T*log(T))-(5.09888*(10^(-3)*(T^(2))))+(0.661846*(10^(-6))*(T^(3)))-(38365.0*(T^(-1))))
                             ((-1118940.2)+(554.00559*T)-(93.268*T*log(T))+(1.01704354*(10^(-2))*(T^(2)))-(2.03335671*(10^(-6))*(T^(3)))+(1091073.7*(T^(-1))))
                             (G_U4_O2_Va+G_gas_O)
                             ((G_U4_O2_Va)-(58351.62)+(39.67611*T)+(0.69315*R*T))
                             (G_U5_O2_Va+G_gas_O)
                             ((-124936.9)-(21.6838*T))'
-    function = '((((1-(2*c))*(1-c)*G_U4_O2_Va) + ((1-(2*c))*(c)*G_U4_O2_O2) + ((2*c)*(1-c)*G_U5_O2_Va) + ((2*c)*(c)*G_U5_O2_O2)) + (R*T*((((1-(2*c))*plog((1-(2*c)),2.718))+(((2*c)*plog(2*c,2.718)))) + (((c)*plog(c,2.718))+((1-c)*plog(1-c,2.718))))) + ((1-(2*c))*(2*c)*L_U4_U5))'
+    function = '((((1-(2*c))*(1-c)*G_U4_O2_Va) + ((1-(2*c))*(c)*G_U4_O2_O2) + ((2*c)*(1-c)*G_U5_O2_Va) + ((2*c)*(c)*G_U5_O2_O2)) + (R*T*((((1-(2*c))*log((1-(2*c))))+(((2*c)*plog(2*c,2.718)))) + (((c)*plog(c,2.718))+((1-c)*log(1-c))))) + ((1-(2*c))*(2*c)*L_U4_U5))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -166,7 +166,7 @@
     constant_expressions = '913
                             8.3144598
                             ((-4621329.3)+(1786.83274*T)-(311.20912*T*log(T))-(0.0311301013*T^(2))+(1741269.49*T^(-1)))'
-    function = '((0.25-c)^2) + ((G_U4O9)-(R*T*(((0.5)*log(0.5))+((0.5)*log(0.5)))))'
+    function = '(((0.25-c)^2)*1e6) + ((G_U4O9)-(R*T*(((0.5)*log(0.5))+((0.5)*log(0.5)))))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -196,7 +196,7 @@
     block = 0
     function_name = h
     eta = eta
-    h_order = HIGH
+    h_order = SIMPLE
   [../]
 []
 
@@ -219,7 +219,7 @@
   nl_rel_tol = 1.0e-10
 
   start_time = 0.0
-  num_steps = 1000
+  num_steps = 3000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
