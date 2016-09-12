@@ -42,7 +42,7 @@
     variable = c
     int_width = 0.1
     numbub = 100
-    bubspac = 3.0
+    bubspac = 3x .0
     radius = 0.5
     outvalue = 0.19
     invalue = 0.19
