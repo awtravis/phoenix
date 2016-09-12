@@ -31,7 +31,7 @@
     variable = eta
     numbub = 100
     int_width = 0.1
-    bubspac = 2.0
+    bubspac = 3.0
     radius = 0.5
     outvalue = 0 # UO2
     invalue = 1 #U4O9
@@ -42,10 +42,10 @@
     variable = c
     int_width = 0.1
     numbub = 100
-    bubspac = 2.0
+    bubspac = 3.0
     radius = 0.5
-    outvalue = 0.22
-    invalue = 0.22
+    outvalue = 0.19
+    invalue = 0.19
     block = 0
   [../]
 []
@@ -72,7 +72,6 @@
     mob_name = L
     f_name = F
   [../]
-
 
   [./c_res]
     type = SplitCHParsed
@@ -125,7 +124,7 @@
     args = 'c'
     constant_names = 'T'
     constant_expressions = '913'
-    function = '((c-((T-231.78)/4682.9))^2)'
+    function = '(((c-((T-231.78)/4672.9))^2)*1)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -135,7 +134,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '((c-0.25)^2)'
+    function = '(((c-0.25)^2)*1)'
     derivative_order = 2
     enable_jit = true
   [../]
