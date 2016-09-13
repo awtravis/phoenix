@@ -29,9 +29,9 @@
   [./etaIC]
     type = MultiSmoothCircleIC
     variable = eta
-    numbub = 100
+    numbub = 200
     int_width = 0.1
-    bubspac = 3.0
+    bubspac = 2.0
     radius = 0.5
     outvalue = 0 # UO2
     invalue = 1 #U4O9
@@ -41,11 +41,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 100
-    bubspac = 3x .0
+    numbub = 200
+    bubspac = 2.0
     radius = 0.5
-    outvalue = 0.19
-    invalue = 0.19
+    outvalue = 0.20
+    invalue = 0.20
     block = 0
   [../]
 []
@@ -124,7 +124,7 @@
     args = 'c'
     constant_names = 'T'
     constant_expressions = '913'
-    function = '(((c-((T-231.78)/4672.9))^2)*1)'
+    function = '(((c-((T-231.78)/4672.9))^2)*2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -134,7 +134,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '(((c-0.25)^2)*1)'
+    function = '(((c-0.25)^2)*2)'
     derivative_order = 2
     enable_jit = true
   [../]
