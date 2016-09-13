@@ -5,8 +5,8 @@
   ny = 100
   xmin = 0
   ymin = 0
-  xmax = 100
-  ymax = 100
+  xmax = 1000
+  ymax = 1000
   elem_type = QUAD4
 []
 
@@ -29,7 +29,7 @@
   [./etaIC]
     type = MultiSmoothCircleIC
     variable = eta
-    numbub = 250
+    numbub = 1000
     int_width = 0.1
     bubspac = 3.0
     radius = 0.5
@@ -41,7 +41,7 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 250
+    numbub = 1000
     bubspac = 3.0
     radius = 0.5
     outvalue = 0.17
@@ -187,7 +187,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1500
+  num_steps = 2500
 
   [./TimeStepper]
   type = IterationAdaptiveDT
@@ -199,7 +199,7 @@
     initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
     refine_fraction = 0.7 # Fraction of high error that will be refined
     coarsen_fraction = 0.1 # Fraction of low error that will coarsened
-    max_h_level = 3 # Max number of refinements used, starting from initial mesh (before uniform refinement)
+    max_h_level = 5 # Max number of refinements used, starting from initial mesh (before uniform refinement)
   [../]
 []
 
