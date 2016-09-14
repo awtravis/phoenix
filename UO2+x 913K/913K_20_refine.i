@@ -5,8 +5,8 @@
   ny = 50
   xmin = 0
   ymin = 0
-  xmax = 100
-  ymax = 100
+  xmax = 50
+  ymax = 50
   elem_type = QUAD4
 []
 
@@ -31,7 +31,7 @@
     variable = eta
     numbub = 200
     int_width = 0.1
-    bubspac = 5.0
+    bubspac = 2.0
     radius = 0.5
     outvalue = 0 # UO2
     invalue = 1 #U4O9
@@ -42,7 +42,7 @@
     variable = c
     int_width = 0.1
     numbub = 200
-    bubspac = 5.0
+    bubspac = 2.0
     radius = 0.5
     outvalue = 0.20
     invalue = 0.20
@@ -123,8 +123,8 @@
     f_name = Fa
     args = 'c'
     constant_names = 'T'
-    constant_expressions = '800'
-    function = '((c-((T-600)/2097.9))^2)*3'
+    constant_expressions = '913'
+    function = '(((c-((T-231.78)/4672.9))^2)*5)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -134,7 +134,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '((c-0.25)^2)*3'
+    function = '(((c-0.25)^2)*5)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -196,11 +196,11 @@
   [../]
 
   [./Adaptivity]
-  initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
-  refine_fraction = 0.7 # Fraction of high error that will be refined
-  coarsen_fraction = 0.1 # Fraction of low error that will coarsened
-  max_h_level = 3 # Max number of refinements used, starting from initial mesh (before uniform refinement)
-[../]
+    initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
+    refine_fraction = 0.7 # Fraction of high error that will be refined
+    coarsen_fraction = 0.1 # Fraction of low error that will coarsened
+    max_h_level = 3 # Max number of refinements used, starting from initial mesh (before uniform refinement)
+  [../]
 []
 
 [Outputs]

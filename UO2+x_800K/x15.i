@@ -1,8 +1,8 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 50
-  ny = 50
+  nx = 100
+  ny = 100
   xmin = 0
   ymin = 0
   xmax = 50
@@ -29,8 +29,8 @@
   [./etaIC]
     type = MultiSmoothCircleIC
     variable = eta
-    numbub = 100
-    int_width = 0.1
+    numbub = 200
+    int_width = 0.2
     bubspac = 2.0
     radius = 0.5
     outvalue = 0 # UO2
@@ -40,8 +40,8 @@
   [./concentrationIC]
     type = MultiSmoothCircleIC
     variable = c
-    int_width = 0.1
-    numbub = 100
+    int_width = 0.2
+    numbub = 200
     bubspac = 2.0
     radius = 0.5
     outvalue = 0.15

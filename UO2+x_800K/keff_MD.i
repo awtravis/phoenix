@@ -19,6 +19,14 @@
     initial_from_file_var = eta
     initial_from_file_timestep = LATEST
   [../]
+  [./c]
+    order = FIRST
+    family = LAGRANGE
+    # For reading a solution
+    # from an ExodusII file
+    initial_from_file_var = c
+    initial_from_file_timestep = LATEST
+  [../]
 []
 
 [Kernels]
@@ -44,16 +52,23 @@
 []
 
 [Materials]
-  [./thcond] #The equation defining the thermal conductivity is defined here, using two ifs
-    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
+  [./thcond] #The equation defining the thermal conductivity is defined here
     type = ParsedMaterial
     block = 0
-    constant_names = 'length_scale k_b k_p2'
-    constant_expressions = '1e-6 3.213 1.5'
-    function = '(((1-eta)^2)*(k_b*length_scale))+(((eta)^2)*(k_p2*length_scale))'
+    args = 'c T eta'
+    constant_names = 'A
+                      B
+                      D
+                      k_U4O9
+                      length_scale'
+    constant_expressions = '0.0311
+                            0.000208
+                            5.92666667
+                            1.5
+                            1e-6'
+    function = 'k_UO2x:=(1/(A+(B*T)+(D*c))); (((1-eta)^2)*(k_UO2x*length_scale))+(((eta)^2)*(k_U4O9*length_scale))'
     outputs = exodus
     f_name = thermal_conductivity
-    args = c
   [../]
 []
 
@@ -64,8 +79,6 @@
     boundary = right
   [../]
   [./k_x_direct] #Effective thermal conductivity from direct method
-    # This value is lower than the AEH value because it is impacted by second phase
-    # on the right boundary
     type = ThermalConductivity
     variable = T
     flux = 5e-7
@@ -82,7 +95,7 @@
   solve_type = NEWTON
   petsc_options_iname = '-pc_type -pc_hypre_type -ksp_gmres_restart -pc_hypre_boomeramg_strong_threshold'
   petsc_options_value = 'hypre boomeramg 31 0.7'
-  l_tol = 1e-04
+  l_tol = 1e-4
 []
 
 [Outputs]

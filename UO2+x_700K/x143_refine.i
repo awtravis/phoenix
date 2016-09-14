@@ -1,12 +1,12 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 50
-  ny = 50
+  nx = 75
+  ny = 75
   xmin = 0
   ymin = 0
-  xmax = 100
-  ymax = 100
+  xmax = 50
+  ymax = 50
   elem_type = QUAD4
 []
 
@@ -31,8 +31,8 @@
     variable = eta
     numbub = 200
     int_width = 0.1
-    bubspac = 5.0
-    radius = 0.5
+    bubspac = 2.0
+    radius = 0.25
     outvalue = 0 # UO2
     invalue = 1 #U4O9
     block = 0
@@ -42,10 +42,10 @@
     variable = c
     int_width = 0.1
     numbub = 200
-    bubspac = 5.0
-    radius = 0.5
-    outvalue = 0.20
-    invalue = 0.20
+    bubspac = 2.0
+    radius = 0.25
+    outvalue = 0.143
+    invalue = 0.143
     block = 0
   [../]
 []
@@ -123,8 +123,8 @@
     f_name = Fa
     args = 'c'
     constant_names = 'T'
-    constant_expressions = '800'
-    function = '((c-((T-600)/2097.9))^2)*3'
+    constant_expressions = '700'
+    function = '(((c-((T-600)/2097.9))^2)*2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -134,7 +134,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '((c-0.25)^2)*3'
+    function = '(((c-0.25)^2)*2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -181,26 +181,26 @@
   solve_type = 'NEWTON'
 
   l_max_its = 15
-  l_tol = 1.0e-4
+  l_tol = 1.0e-5
 
   nl_max_its = 10
-  nl_rel_tol = 1.0e-4
+  nl_rel_tol = 1.0e-5
 
   start_time = 0.0
-  num_steps = 1000
+  num_steps = 1200
 
   [./TimeStepper]
-  type = IterationAdaptiveDT
-  dt = 1e-4 # Initial time step.
-  optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
+    type = IterationAdaptiveDT
+    dt = 1e-4 # Initial time step.
+    optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
 
   [./Adaptivity]
-  initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
-  refine_fraction = 0.7 # Fraction of high error that will be refined
-  coarsen_fraction = 0.1 # Fraction of low error that will coarsened
-  max_h_level = 3 # Max number of refinements used, starting from initial mesh (before uniform refinement)
-[../]
+    initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
+    refine_fraction = 0.7 # Fraction of high error that will be refined
+    coarsen_fraction = 0.1 # Fraction of low error that will coarsened
+    max_h_level = 5 # Max number of refinements used, starting from initial mesh (before uniform refinement)
+  [../]
 []
 
 [Outputs]
