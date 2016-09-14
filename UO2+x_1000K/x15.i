@@ -29,7 +29,7 @@
   [./etaIC]
     type = MultiSmoothCircleIC
     variable = eta
-    numbub = 200
+    numbub = 100
     int_width = 0.1
     bubspac = 2.0
     radius = 0.5
@@ -41,11 +41,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 200
+    numbub = 100
     bubspac = 2.0
     radius = 0.5
-    outvalue = 0.20
-    invalue = 0.20
+    outvalue = 0.15
+    invalue = 0.15
     block = 0
   [../]
 []
@@ -123,8 +123,8 @@
     f_name = Fa
     args = 'c'
     constant_names = 'T'
-    constant_expressions = '913'
-    function = '(((c-((T-231.78)/4672.9))^2)*5)'
+    constant_expressions = '1000'
+    function = '((c-((T-231.78)/4672.9))^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -134,7 +134,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '(((c-0.25)^2)*5)'
+    function = '((c-0.25)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -193,13 +193,6 @@
   type = IterationAdaptiveDT
   dt = 1e-4 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
-  [../]
-
-  [./Adaptivity]
-    initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
-    refine_fraction = 0.7 # Fraction of high error that will be refined
-    coarsen_fraction = 0.1 # Fraction of low error that will coarsened
-    max_h_level = 3 # Max number of refinements used, starting from initial mesh (before uniform refinement)
   [../]
 []
 
