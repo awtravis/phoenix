@@ -108,7 +108,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L M kappa_c'
-    prop_values = '1 1 0.5'
+    prop_values = '1 1 0.1'
   [../]
   [./aniso]
     type = WidmanstattenMaterial
@@ -123,7 +123,7 @@
     f_name = Fa
     args = 'c'
     constant_names = 'T'
-    constant_expressions = '700'
+    constant_expressions = '800'
     function = '(((c-((T-600)/2097.9))^2))'
     derivative_order = 2
     enable_jit = true
@@ -134,7 +134,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '(((c-0.25)^2)*5)'
+    function = '(((c-0.25)^2))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -187,7 +187,7 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1000
+  num_steps = 1500
 
   [./TimeStepper]
   type = IterationAdaptiveDT

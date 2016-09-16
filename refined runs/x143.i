@@ -44,8 +44,8 @@
     numbub = 200
     bubspac = 2.0
     radius = 0.5
-    outvalue = 0.143
-    invalue = 0.143
+    outvalue = 0.20
+    invalue = 0.20
     block = 0
   [../]
 []
@@ -108,7 +108,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L M kappa_c'
-    prop_values = '1 1 0.5'
+    prop_values = '1 1 0.1'
   [../]
   [./aniso]
     type = WidmanstattenMaterial
@@ -123,8 +123,8 @@
     f_name = Fa
     args = 'c'
     constant_names = 'T'
-    constant_expressions = '700'
-    function = '(((c-((T-600)/2097.9))^2))'
+    constant_expressions = '913'
+    function = '(((c-((T-231.78)/4672.9))^2))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -134,7 +134,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '(((c-0.25)^2)*5)'
+    function = '(((c-0.25)^2))'
     derivative_order = 2
     enable_jit = true
   [../]

@@ -108,7 +108,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L M kappa_c'
-    prop_values = '1 1 0.5'
+    prop_values = '1 1 0.1'
   [../]
   [./aniso]
     type = WidmanstattenMaterial
