@@ -29,7 +29,7 @@
   [./etaIC]
     type = MultiSmoothCircleIC
     variable = eta
-    numbub = 100
+    numbub = 200
     int_width = 0.1
     bubspac = 2.0
     radius = 0.5
@@ -41,11 +41,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 100
+    numbub = 200
     bubspac = 2.0
     radius = 0.5
-    outvalue = 0.22
-    invalue = 0.22
+    outvalue = 0.143
+    invalue = 0.143
     block = 0
   [../]
 []
@@ -72,7 +72,6 @@
     mob_name = L
     f_name = F
   [../]
-
 
   [./c_res]
     type = SplitCHParsed
@@ -109,7 +108,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L M kappa_c'
-    prop_values = '1 1 1'
+    prop_values = '1 1 0.5'
   [../]
   [./aniso]
     type = WidmanstattenMaterial
@@ -124,8 +123,8 @@
     f_name = Fa
     args = 'c'
     constant_names = 'T'
-    constant_expressions = '913'
-    function = '((c-((T-231.78)/4682.9))^2)'
+    constant_expressions = '700'
+    function = '(((c-((T-600)/2097.9))^2))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -135,7 +134,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '((c-0.25)^2)'
+    function = '(((c-0.25)^2)*5)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -194,6 +193,13 @@
   type = IterationAdaptiveDT
   dt = 1e-4 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
+  [../]
+
+  [./Adaptivity]
+    initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
+    refine_fraction = 0.7 # Fraction of high error that will be refined
+    coarsen_fraction = 0.1 # Fraction of low error that will coarsened
+    max_h_level = 3 # Max number of refinements used, starting from initial mesh (before uniform refinement)
   [../]
 []
 
