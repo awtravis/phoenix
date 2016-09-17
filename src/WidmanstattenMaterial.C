@@ -13,10 +13,10 @@ template<>
 InputParameters validParams<WidmanstattenMaterial>()
 {
   InputParameters params = validParams<Material>();
-  params.addParam<Real>("anisotropy_strength", 0.01, "Strength of the anisotropy (typically < 0.05)");
+  params.addParam<Real>("anisotropy_strength", 0.04, "Strength of the anisotropy (typically < 0.05)");
   params.addParam<unsigned int>("mode_number", 1, "Mode number for anisotropy");
   params.addParam<Real>("reference_angle", 90, "Reference angle for defining anistropy in degrees");
-  params.addParam<Real>("eps_bar", 0.01, "Average value of the interface parameter epsilon");
+  params.addParam<Real>("eps_bar", 0.05, "Average value of the interface parameter epsilon");
   params.addRequiredCoupledVar("op", "Order parameter defining the solid phase");
   return params;
 }
