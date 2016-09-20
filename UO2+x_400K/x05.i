@@ -124,7 +124,7 @@
     args = 'c'
     constant_names = 'T'
     constant_expressions = '400'
-    function = '(c^2)'
+    function = '(c^2)*5'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -134,7 +134,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '((c-0.25)^2)'
+    function = '((c-0.25)^2)*5'
     derivative_order = 2
     enable_jit = true
   [../]

@@ -1,8 +1,8 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 50
-  ny = 50
+  nx = 100
+  ny = 100
   xmin = 0
   ymin = 0
   xmax = 100
@@ -108,7 +108,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L M kappa_c'
-    prop_values = '1 1 1'
+    prop_values = '1 1 0.1'
   [../]
   [./aniso]
     type = WidmanstattenMaterial
@@ -124,7 +124,7 @@
     args = 'c'
     constant_names = 'T'
     constant_expressions = '800'
-    function = '((c-((T-600)/2097.9))^2)*3'
+    function = '((c-((T-600)/2097.9))^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -134,7 +134,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '((c-0.25)^2)*3'
+    function = '((c-0.25)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -194,13 +194,6 @@
   dt = 1e-4 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
-
-  [./Adaptivity]
-  initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
-  refine_fraction = 0.7 # Fraction of high error that will be refined
-  coarsen_fraction = 0.1 # Fraction of low error that will coarsened
-  max_h_level = 3 # Max number of refinements used, starting from initial mesh (before uniform refinement)
-[../]
 []
 
 [Outputs]
