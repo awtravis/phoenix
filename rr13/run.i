@@ -108,7 +108,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L M kappa_c'
-    prop_values = '1 1 0.025'
+    prop_values = '1 1 0.05'
   [../]
   [./aniso]
     type = WidmanstattenMaterial
@@ -123,7 +123,7 @@
     f_name = Fa
     args = 'c'
     constant_names = 'T'
-    constant_expressions = '700'
+    constant_expressions = '900'
     function = '(((c-((T-600)/2097.9))^2))'
     derivative_order = 2
     enable_jit = true
