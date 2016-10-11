@@ -1,8 +1,8 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 100
-  ny = 100
+  nx = 50
+  ny = 50
   xmin = 0
   ymin = 0
   xmax = 50
@@ -14,10 +14,10 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 20
+    numbub = 200
     int_width = 0.1
-    bubspac = 7.0
-    radius = 3.0
+    bubspac = 1.5
+    radius = 0.5
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
@@ -27,11 +27,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 20
-    bubspac = 7.0
-    radius = 3.0
-    outvalue = 0.063
-    invalue = 0.063
+    numbub = 200
+    bubspac = 1.5
+    radius = 0.5
+    outvalue = 0.05
+    invalue = 0.05
     block = 0
   [../]
 []
@@ -118,7 +118,7 @@
     block = 0
   [../]
   [./aniso]
-    type = InterfaceOrientationMaterial
+    type = WidmanstattenMaterial
     block = 0
     c = c
     op = eta

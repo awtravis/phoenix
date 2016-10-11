@@ -1,8 +1,8 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 100
-  ny = 100
+  nx = 50
+  ny = 50
   xmin = 0
   ymin = 0
   xmax = 50
@@ -14,10 +14,10 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 20
+    numbub = 50
     int_width = 0.1
-    bubspac = 7.0
-    radius = 3.0
+    bubspac = 5.0
+    radius = 1.5
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
@@ -27,11 +27,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 20
-    bubspac = 7.0
-    radius = 3.0
-    outvalue = 0.063
-    invalue = 0.063
+    numbub = 50
+    bubspac = 5.0
+    radius = 1.5
+    outvalue = 0.05
+    invalue = 0.05
     block = 0
   [../]
 []
@@ -67,6 +67,13 @@
     type = ACInterface
     variable = eta
     kappa_name = kappa_eta
+  [../]
+
+  [./penalty]
+    type = SwitchingFunctionPenalty
+    variable = eta
+    etas   = 'eta'
+    h_names = 'h'
   [../]
 
   [./c_res]
@@ -126,9 +133,9 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '0.05     0       0
-              0     1         0
-              0        0        0'
+    tensor = '1    0    0
+              0    1    0
+              0    0    0'
     M_name = M
   [../]
 
@@ -144,7 +151,7 @@
     block = 0
     function_name = h
     eta = eta
-    h_orders = HIGH
+    h_orders = SIMPLE
   [../]
 
   # Free energy of UO2 matrix

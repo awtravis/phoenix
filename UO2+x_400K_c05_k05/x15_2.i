@@ -1,12 +1,12 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 100
-  ny = 100
-  xmin = 0
-  ymin = 0
-  xmax = 50
-  ymax = 50
+  nx = 75
+  ny = 75
+  xmin = -25
+  ymin = -25
+  xmax = 25
+  ymax = 25
   block = 0
   elem_type = QUAD4
 []
@@ -14,10 +14,10 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 20
+    numbub = 300
     int_width = 0.1
-    bubspac = 7.0
-    radius = 3.0
+    bubspac = 1.5
+    radius = 0.5
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
@@ -27,11 +27,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 20
-    bubspac = 7.0
-    radius = 3.0
-    outvalue = 0.063
-    invalue = 0.063
+    numbub = 300
+    bubspac = 1.5
+    radius = 0.5
+    outvalue = 0.15
+    invalue = 0.15
     block = 0
   [../]
 []
@@ -67,6 +67,13 @@
     type = ACInterface
     variable = eta
     kappa_name = kappa_eta
+  [../]
+
+  [./penalty]
+    type = SwitchingFunctionPenalty
+    variable = eta
+    etas   = 'eta'
+    h_names = 'h'
   [../]
 
   [./c_res]
@@ -114,11 +121,11 @@
   [./CHconsts]
     type = GenericConstantMaterial
     prop_names  = 'kappa_c'
-    prop_values = '1'
+    prop_values = '0.01'
     block = 0
   [../]
   [./aniso]
-    type = InterfaceOrientationMaterial
+    type = WidmanstattenMaterial
     block = 0
     c = c
     op = eta
@@ -126,9 +133,9 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '0.05     0       0
-              0     1         0
-              0        0        0'
+    tensor = '0.01    0    0
+              0      10   0
+              0      0    0'
     M_name = M
   [../]
 
@@ -144,7 +151,7 @@
     block = 0
     function_name = h
     eta = eta
-    h_orders = HIGH
+    h_orders = SIMPLE
   [../]
 
   # Free energy of UO2 matrix

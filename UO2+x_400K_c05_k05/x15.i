@@ -14,10 +14,10 @@
 [ICs]
   [./etaIC]
     type = MultiSmoothCircleIC
-    numbub = 20
+    numbub = 75
     int_width = 0.1
-    bubspac = 7.0
-    radius = 3.0
+    bubspac = 4.0
+    radius = 1.0
     outvalue = 0 # UO2
     variable = eta
     invalue = 1 #U4O9
@@ -27,11 +27,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 20
-    bubspac = 7.0
-    radius = 3.0
-    outvalue = 0.063
-    invalue = 0.063
+    numbub = 75
+    bubspac = 4.0
+    radius = 1.0
+    outvalue = 0.15
+    invalue = 0.15
     block = 0
   [../]
 []
@@ -67,6 +67,13 @@
     type = ACInterface
     variable = eta
     kappa_name = kappa_eta
+  [../]
+
+  [./penalty]
+    type = SwitchingFunctionPenalty
+    variable = eta
+    etas   = 'eta'
+    h_names = 'h'
   [../]
 
   [./c_res]
@@ -118,7 +125,7 @@
     block = 0
   [../]
   [./aniso]
-    type = InterfaceOrientationMaterial
+    type = WidmanstattenMaterial
     block = 0
     c = c
     op = eta
@@ -126,9 +133,9 @@
   [./mobility]
     type = ConstantAnisotropicMobility
     block = 0
-    tensor = '0.05     0       0
-              0     1         0
-              0        0        0'
+    tensor = '1    0    0
+              0    1    0
+              0    0    0'
     M_name = M
   [../]
 

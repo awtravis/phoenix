@@ -1,39 +1,13 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 100
-  ny = 100
+  nx = 50
+  ny = 50
   xmin = 0
   ymin = 0
   xmax = 50
   ymax = 50
-  block = 0
   elem_type = QUAD4
-[]
-
-[ICs]
-  [./etaIC]
-    type = MultiSmoothCircleIC
-    numbub = 20
-    int_width = 0.1
-    bubspac = 7.0
-    radius = 3.0
-    outvalue = 0 # UO2
-    variable = eta
-    invalue = 1 #U4O9
-    block = 0
-  [../]
-  [./concentrationIC]
-    type = MultiSmoothCircleIC
-    variable = c
-    int_width = 0.1
-    numbub = 20
-    bubspac = 7.0
-    radius = 3.0
-    outvalue = 0.063
-    invalue = 0.063
-    block = 0
-  [../]
 []
 
 [Variables]
@@ -51,22 +25,52 @@
   [../]
 []
 
-[Kernels]
+[ICs]
+  [./etaIC]
+    type = MultiSmoothCircleIC
+    variable = eta
+    numbub = 200
+    int_width = 0.1
+    bubspac = 2.0
+    radius = 0.5
+    outvalue = 0 # UO2
+    invalue = 1 #U4O9
+    block = 0
+  [../]
+  [./concentrationIC]
+    type = MultiSmoothCircleIC
+    variable = c
+    int_width = 0.1
+    numbub = 200
+    bubspac = 2.0
+    radius = 0.5
+    outvalue = 0.05
+    invalue = 0.05
+    block = 0
+  [../]
+[]
 
+[Kernels]
   [./detadt]
     type = TimeDerivative
     variable = eta
   [../]
-  [./ACBulk]
+  [./anisoACinterface1]
+    type = ACInterfaceKobayashi1
+    variable = eta
+    mob_name = L
+  [../]
+  [./anisoACinterface2]
+    type = ACInterfaceKobayashi2
+    variable = eta
+    mob_name = L
+  [../]
+  [./AllenCahn]
     type = AllenCahn
     variable = eta
     args = c
+    mob_name = L
     f_name = F
-  [../]
-  [./ACInterface]
-    type = ACInterface
-    variable = eta
-    kappa_name = kappa_eta
   [../]
 
   [./c_res]
@@ -78,15 +82,9 @@
     args = 'eta'
   [../]
   [./w_res]
-    type = SplitCHWResAniso
+    type = SplitCHWRes
     variable = w
     mob_name = M
-  [../]
-  [./anisotropy]
-    type = CHInterfaceAniso
-    variable = c
-    mob_name = M
-    kappa_name = kappa_c
   [../]
 
   [./time]
@@ -105,46 +103,17 @@
 []
 
 [Materials]
-  [./AHconsts]
+  # Material properties for descirbing anisotropy of the system
+  [./Consts]
     type = GenericConstantMaterial
     block = 0
-    prop_names  = 'L kappa_eta'
-    prop_values = '1 1'
-  [../]
-  [./CHconsts]
-    type = GenericConstantMaterial
-    prop_names  = 'kappa_c'
-    prop_values = '1'
-    block = 0
+    prop_names  = 'L M kappa_c'
+    prop_values = '1 1 0.1'
   [../]
   [./aniso]
-    type = InterfaceOrientationMaterial
+    type = WidmanstattenMaterial
     block = 0
-    c = c
     op = eta
-  [../]
-  [./mobility]
-    type = ConstantAnisotropicMobility
-    block = 0
-    tensor = '0.05     0       0
-              0     1         0
-              0        0        0'
-    M_name = M
-  [../]
-
-  [./barrier]
-    type = BarrierFunctionMaterial
-    block = 0
-    eta = eta
-    g_order = SIMPLE
-  [../]
-
-  [./switching]
-    type = SwitchingFunctionMaterial
-    block = 0
-    function_name = h
-    eta = eta
-    h_orders = HIGH
   [../]
 
   # Free energy of UO2 matrix
@@ -153,7 +122,9 @@
     block = 0
     f_name = Fa
     args = 'c'
-    function = '100*(c^2)'
+    constant_names = 'T'
+    constant_expressions = '913'
+    function = '(((c-((T-231.78)/4672.9))^2))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -163,7 +134,7 @@
     block = 0
     f_name = Fb
     args = 'c'
-    function = '100*((0.25-c)^2)'
+    function = '(((c-0.25)^2))'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -179,6 +150,21 @@
     derivative_order = 2
     outputs = exodus
     output_properties = 'F dF/dc dF/deta d^2F/dc^2 d^2F/dcdeta d^2F/deta^2'
+  [../]
+
+  [./barrier]
+    type = BarrierFunctionMaterial
+    block = 0
+    eta = eta
+    g_order = SIMPLE
+  [../]
+
+  [./switching]
+    type = SwitchingFunctionMaterial
+    block = 0
+    function_name = h
+    eta = eta
+    h_order = SIMPLE
   [../]
 []
 
@@ -201,17 +187,23 @@
   nl_rel_tol = 1.0e-4
 
   start_time = 0.0
-  num_steps = 1111
+  num_steps = 1000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
-  dt = .001 # Initial time step.
+  dt = 1e-4 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
+  [../]
+
+  [./Adaptivity]
+    initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
+    refine_fraction = 0.7 # Fraction of high error that will be refined
+    coarsen_fraction = 0.1 # Fraction of low error that will coarsened
+    max_h_level = 3 # Max number of refinements used, starting from initial mesh (before uniform refinement)
   [../]
 []
 
 [Outputs]
   execute_on = 'initial timestep_end'
   exodus = true
-  csv = true
 []

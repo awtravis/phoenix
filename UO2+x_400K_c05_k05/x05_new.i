@@ -1,39 +1,13 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  nx = 100
-  ny = 100
+  nx = 50
+  ny = 50
   xmin = 0
   ymin = 0
   xmax = 50
   ymax = 50
-  block = 0
   elem_type = QUAD4
-[]
-
-[ICs]
-  [./etaIC]
-    type = MultiSmoothCircleIC
-    numbub = 20
-    int_width = 0.1
-    bubspac = 7.0
-    radius = 3.0
-    outvalue = 0 # UO2
-    variable = eta
-    invalue = 1 #U4O9
-    block = 0
-  [../]
-  [./concentrationIC]
-    type = MultiSmoothCircleIC
-    variable = c
-    int_width = 0.1
-    numbub = 20
-    bubspac = 7.0
-    radius = 3.0
-    outvalue = 0.063
-    invalue = 0.063
-    block = 0
-  [../]
 []
 
 [Variables]
@@ -51,8 +25,32 @@
   [../]
 []
 
-[Kernels]
+[ICs]
+  [./etaIC]
+    type = MultiSmoothCircleIC
+    variable = eta
+    numbub = 300
+    int_width = 0.1
+    bubspac = 1.5
+    radius = 0.5
+    outvalue = 0 # UO2
+    invalue = 1 #U4O9
+    block = 0
+  [../]
+  [./concentrationIC]
+    type = MultiSmoothCircleIC
+    variable = c
+    int_width = 0.1
+    numbub = 300
+    bubspac = 1.5
+    radius = 0.5
+    outvalue = 0.05
+    invalue = 0.05
+    block = 0
+  [../]
+[]
 
+[Kernels]
   [./detadt]
     type = TimeDerivative
     variable = eta
@@ -78,17 +76,10 @@
     args = 'eta'
   [../]
   [./w_res]
-    type = SplitCHWResAniso
+    type = SplitCHWRes
     variable = w
     mob_name = M
   [../]
-  [./anisotropy]
-    type = CHInterfaceAniso
-    variable = c
-    mob_name = M
-    kappa_name = kappa_c
-  [../]
-
   [./time]
     type = CoupledTimeDerivative
     variable = w
@@ -105,72 +96,47 @@
 []
 
 [Materials]
-  [./AHconsts]
+  [./consts]
     type = GenericConstantMaterial
-    block = 0
     prop_names  = 'L kappa_eta'
-    prop_values = '1 1'
+    prop_values = '1 1        '
   [../]
-  [./CHconsts]
+  [./consts2]
     type = GenericConstantMaterial
-    prop_names  = 'kappa_c'
-    prop_values = '1'
-    block = 0
-  [../]
-  [./aniso]
-    type = InterfaceOrientationMaterial
-    block = 0
-    c = c
-    op = eta
-  [../]
-  [./mobility]
-    type = ConstantAnisotropicMobility
-    block = 0
-    tensor = '0.05     0       0
-              0     1         0
-              0        0        0'
-    M_name = M
-  [../]
-
-  [./barrier]
-    type = BarrierFunctionMaterial
-    block = 0
-    eta = eta
-    g_order = SIMPLE
+    prop_names  = 'M kappa_c'
+    prop_values = '1 1'
   [../]
 
   [./switching]
     type = SwitchingFunctionMaterial
-    block = 0
-    function_name = h
     eta = eta
-    h_orders = HIGH
+    h_order = SIMPLE
+  [../]
+  [./barrier]
+    type = BarrierFunctionMaterial
+    eta = eta
+    g_order = SIMPLE
   [../]
 
-  # Free energy of UO2 matrix
   [./free_energy_A]
     type = DerivativeParsedMaterial
-    block = 0
     f_name = Fa
     args = 'c'
-    function = '100*(c^2)'
+    function = '((c)^2)*10'
     derivative_order = 2
     enable_jit = true
   [../]
-  # Free energy of U4O9 domain
   [./free_energy_B]
     type = DerivativeParsedMaterial
-    block = 0
     f_name = Fb
     args = 'c'
-    function = '100*((0.25-c)^2)'
+    function = '((0.25-c)^2)*10'
     derivative_order = 2
     enable_jit = true
   [../]
 
   [./free_energy]
     type = DerivativeTwoPhaseMaterial
-    block = 0
     f_name = F
     fa_name = Fa
     fb_name = Fb
@@ -198,20 +164,18 @@
   l_tol = 1.0e-4
 
   nl_max_its = 10
-  nl_rel_tol = 1.0e-4
+  nl_rel_tol = 1.0e-11
 
   start_time = 0.0
-  num_steps = 1111
+  num_steps = 1000
 
   [./TimeStepper]
   type = IterationAdaptiveDT
-  dt = .001 # Initial time step.
+  dt = 1e-4 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
 []
 
 [Outputs]
-  execute_on = 'initial timestep_end'
   exodus = true
-  csv = true
 []
