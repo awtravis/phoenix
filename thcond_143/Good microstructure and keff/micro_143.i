@@ -1,4 +1,4 @@
-[Mesh]
+s[Mesh]
   type = GeneratedMesh
   dim = 2
   nx = 100
@@ -58,7 +58,7 @@
     variable = eta
   [../]
   [./ACBulk]
-    type = ACParsed
+    type = AllenCahn
     variable = eta
     args = c
     f_name = F
@@ -128,6 +128,7 @@
     type = InterfaceOrientationMaterial
     block = 0
     c = c
+    op = eta
   [../]
   [./mobility]
     type = ConstantAnisotropicMobility

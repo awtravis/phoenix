@@ -1,7 +1,7 @@
 [Mesh]
   # uniform_refine = 4
-  type = FileMesh
-  file = 15U3Si5_01_mesh.inp
+  type = ImageMesh
+  file = three_phase_1_color
   construct_side_list_from_node_list = true
 []
 
