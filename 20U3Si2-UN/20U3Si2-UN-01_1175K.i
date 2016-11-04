@@ -144,7 +144,7 @@
       flux = 1.5e-7
       length_scale = 1e-6
       T_hot = 1175
-      dx = 500
+      dx = 1292
       boundary = right
     [../]
     [./k_x_AEH] #Effective thermal conductivity in x-direction from AEH
@@ -175,11 +175,11 @@
 
   [Executioner]
     type = Steady
-    l_max_its = 15
+    l_max_its = 20
     solve_type = NEWTON
     petsc_options_iname = '-pc_type -pc_hypre_type -ksp_gmres_restart -pc_hypre_boomeramg_strong_threshold'
     petsc_options_value = 'hypre boomeramg 31 0.7'
-    l_tol = 1e-04
+    l_tol = 1e-10
   []
 
   [Outputs]
