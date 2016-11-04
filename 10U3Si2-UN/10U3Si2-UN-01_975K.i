@@ -1,7 +1,7 @@
 [Mesh]
   # uniform_refine = 4
   type = FileMesh
-  file = 15U3Si5_01_mesh.inp
+  file = 10U3Si2-UN-01_mesh.inp
   construct_side_list_from_node_list = true
 []
 
@@ -16,14 +16,14 @@
 
 [Variables]
   [./T]
-    initial_condition = 375
+    initial_condition = 975
   [../]
   [./Tx_AEH] #Temperature used for the x-component of the AEH solve
-    initial_condition = 375
+    initial_condition = 975
     scaling = 1.0e4 #Scales residual to improve convergence
   [../]
   [./Ty_AEH] #Temperature used for the y-component of the AEH solve
-    initial_condition = 375
+    initial_condition = 975
     scaling = 1.0e4  #Scales residual to improve convergence
   [../]
 []
@@ -58,13 +58,13 @@
     type = DirichletBC
     variable = T
     boundary = left
-    value = 375
+    value = 975
   [../]
   [./right_flux] #Set heat flux on the right side
     type = NeumannBC
     variable = T
     boundary = right
-    value = 5e-8
+    value = 1.5e-7
   [../]
   [./Periodic]
     [./all]
@@ -75,13 +75,13 @@
   [./fix_x] #Fix Tx_AEH at a single point
     type = DirichletBC
     variable = Tx_AEH
-    value = 375
+    value = 975
     boundary = 100
   [../]
   [./fix_y] #Fix Ty_AEH at a single point
     type = DirichletBC
     variable = Ty_AEH
-    value = 375
+    value = 975
     boundary = 100
   [../]
 []
@@ -92,9 +92,9 @@
     # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
     type = ParsedMaterial
     block = 0
-    constant_names = 'length_scale k_U3Si5'
-    constant_expressions = '1e-6 5.2051'
-    function = '(k_U3Si5*length_scale)'
+    constant_names = 'length_scale k_U3Si2'
+    constant_expressions = '1e-6 16.8'
+    function = '(k_U3Si2*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
   [../]
@@ -103,7 +103,7 @@
     type = ParsedMaterial
     block = 1
     constant_names = 'length_scale k_UN'
-    constant_expressions = '1e-6 13.3986'
+    constant_expressions = '1e-6 22.36'
     function = '(k_UN*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
@@ -112,9 +112,9 @@
     # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
     type = ParsedMaterial
     block = 2
-    constant_names = 'length_scale k_U3Si5'
-    constant_expressions = '1e-6 5.2051'
-    function = '(k_U3Si5*length_scale)'
+    constant_names = 'length_scale k_U3Si2'
+    constant_expressions = '1e-6 16.8'
+    function = '(k_U3Si2*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
   [../]
@@ -123,7 +123,7 @@
     type = ParsedMaterial
     block = 3
     constant_names = 'length_scale k_UN'
-    constant_expressions = '1e-6 13.3986'
+    constant_expressions = '1e-6 22.36'
     function = '(k_UN*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
@@ -141,10 +141,10 @@
       # on the right boundary
       type = ThermalConductivity
       variable = T
-      flux = 5e-7
+      flux = 1.5e-7
       length_scale = 1e-6
-      T_hot = 375
-      dx = 250
+      T_hot = 975
+      dx = 500
       boundary = right
     [../]
     [./k_x_AEH] #Effective thermal conductivity in x-direction from AEH
