@@ -1,7 +1,7 @@
 [Mesh]
   # uniform_refine = 4
   type = FileMesh
-  file = 30U3Si2-UN-01_mesh.inp
+  file = test_30-03.inp
   construct_side_list_from_node_list = true
 []
 
@@ -102,26 +102,6 @@
     # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
     type = ParsedMaterial
     block = 1
-    constant_names = 'length_scale k_UN'
-    constant_expressions = '1e-6 15.78'
-    function = '(k_UN*length_scale)'
-    outputs = exodus
-    f_name = thermal_conductivity
-  [../]
-  [./thcond_3] #The equation defining the thermal conductivity is defined here, using two ifs
-    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
-    type = ParsedMaterial
-    block = 2
-    constant_names = 'length_scale k_U3Si2'
-    constant_expressions = '1e-6 9.08'
-    function = '(k_U3Si2*length_scale)'
-    outputs = exodus
-    f_name = thermal_conductivity
-  [../]
-  [./thcond_4] #The equation defining the thermal conductivity is defined here, using two ifs
-    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
-    type = ParsedMaterial
-    block = 3
     constant_names = 'length_scale k_UN'
     constant_expressions = '1e-6 15.78'
     function = '(k_UN*length_scale)'
