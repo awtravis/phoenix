@@ -16,14 +16,14 @@
 
 [Variables]
   [./T]
-    initial_condition = 320
+    initial_condition = 1274
   [../]
   [./Tx_AEH] #Temperature used for the x-component of the AEH solve
-    initial_condition = 320
+    initial_condition = 1274
     scaling = 1.0e4 #Scales residual to improve convergence
   [../]
   [./Ty_AEH] #Temperature used for the y-component of the AEH solve
-    initial_condition = 320
+    initial_condition = 1274
     scaling = 1.0e4  #Scales residual to improve convergence
   [../]
 []
@@ -58,7 +58,7 @@
     type = DirichletBC
     variable = T
     boundary = left
-    value = 320
+    value = 1274
   [../]
   [./right_flux] #Set heat flux on the right side
     type = NeumannBC
@@ -75,13 +75,13 @@
   [./fix_x] #Fix Tx_AEH at a single point
     type = DirichletBC
     variable = Tx_AEH
-    value = 320
+    value = 1274
     boundary = 100
   [../]
   [./fix_y] #Fix Ty_AEH at a single point
     type = DirichletBC
     variable = Ty_AEH
-    value = 320
+    value = 1274
     boundary = 100
   [../]
 []
@@ -93,7 +93,7 @@
     type = ParsedMaterial
     block = 0
     constant_names = 'length_scale k_U3Si2'
-    constant_expressions = '1e-6 5.93'
+    constant_expressions = '1e-6 20.2'
     function = '(k_U3Si2*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
@@ -103,7 +103,7 @@
     type = ParsedMaterial
     block = 1
     constant_names = 'length_scale k_UN'
-    constant_expressions = '1e-6 14.96'
+    constant_expressions = '1e-6 24.63'
     function = '(k_UN*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
@@ -113,7 +113,7 @@
     type = ParsedMaterial
     block = 2
     constant_names = 'length_scale k_unknown'
-    constant_expressions = '1e-6 5.00'
+    constant_expressions = '1e-6 12.24'
     function = '(k_unknown*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
@@ -133,8 +133,8 @@
       variable = T
       flux = 1.5e-7
       length_scale = 1e-6
-      T_hot = 320
-      dx = 1292
+      T_hot = 1274
+      dx = 800
       boundary = right
     [../]
     [./k_x_AEH] #Effective thermal conductivity in x-direction from AEH
