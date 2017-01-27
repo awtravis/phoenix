@@ -16,14 +16,14 @@
 
 [Variables]
   [./T]
-    initial_condition = 1674
+    initial_condition = 1574
   [../]
   [./Tx_AEH] #Temperature used for the x-component of the AEH solve
-    initial_condition = 1674
+    initial_condition = 1574
     scaling = 1.0e4 #Scales residual to improve convergence
   [../]
   [./Ty_AEH] #Temperature used for the y-component of the AEH solve
-    initial_condition = 1674
+    initial_condition = 1574
     scaling = 1.0e4  #Scales residual to improve convergence
   [../]
 []
@@ -58,7 +58,7 @@
     type = DirichletBC
     variable = T
     boundary = left
-    value = 1674
+    value = 1574
   [../]
   [./right_flux] #Set heat flux on the right side
     type = NeumannBC
@@ -75,13 +75,13 @@
   [./fix_x] #Fix Tx_AEH at a single point
     type = DirichletBC
     variable = Tx_AEH
-    value = 1674
+    value = 1574
     boundary = 100
   [../]
   [./fix_y] #Fix Ty_AEH at a single point
     type = DirichletBC
     variable = Ty_AEH
-    value = 1674
+    value = 1574
     boundary = 100
   [../]
 []
@@ -93,7 +93,7 @@
     type = ParsedMaterial
     block = 0
     constant_names = 'length_scale k_unknown'
-    constant_expressions = '1e-6 13.08'
+    constant_expressions = '1e-6 12.9'
     function = '(k_unknown*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
@@ -103,27 +103,7 @@
     type = ParsedMaterial
     block = 1
     constant_names = 'length_scale k_UN'
-    constant_expressions = '1e-6 27.18'
-    function = '(k_UN*length_scale)'
-    outputs = exodus
-    f_name = thermal_conductivity
-  [../]
-  [./thcond_3] #The equation defining the thermal conductivity is defined here, using two ifs
-    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
-    type = ParsedMaterial
-    block = 2
-    constant_names = 'length_scale k_unknown'
-    constant_expressions = '1e-6 13.08'
-    function = '(k_unknown*length_scale)'
-    outputs = exodus
-    f_name = thermal_conductivity
-  [../]
-  [./thcond_4] #The equation defining the thermal conductivity is defined here, using two ifs
-    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
-    type = ParsedMaterial
-    block = 3
-    constant_names = 'length_scale k_UN'
-    constant_expressions = '1e-6 27.18'
+    constant_expressions = '1e-6 26.59'
     function = '(k_UN*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
@@ -143,7 +123,7 @@
       variable = T
       flux = 1.5e-7
       length_scale = 1e-6
-      T_hot = 1674
+      T_hot = 1574
       dx = 1292
       boundary = right
     [../]

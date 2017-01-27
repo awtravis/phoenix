@@ -108,26 +108,6 @@
     outputs = exodus
     f_name = thermal_conductivity
   [../]
-  [./thcond_3] #The equation defining the thermal conductivity is defined here, using two ifs
-    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
-    type = ParsedMaterial
-    block = 2
-    constant_names = 'length_scale k_unknown'
-    constant_expressions = '1e-6 13.08'
-    function = '(k_unknown*length_scale)'
-    outputs = exodus
-    f_name = thermal_conductivity
-  [../]
-  [./thcond_4] #The equation defining the thermal conductivity is defined here, using two ifs
-    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
-    type = ParsedMaterial
-    block = 3
-    constant_names = 'length_scale k_UN'
-    constant_expressions = '1e-6 27.18'
-    function = '(k_UN*length_scale)'
-    outputs = exodus
-    f_name = thermal_conductivity
-  [../]
 []
 
   [Postprocessors]
