@@ -93,7 +93,7 @@
     type = ParsedMaterial
     block = 0
     constant_names = 'length_scale k_U3Si2'
-    constant_expressions = '1e-6 14.5'
+    constant_expressions = '1e-6 3.63'
     function = '(k_U3Si2*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
@@ -113,7 +113,7 @@
     type = ParsedMaterial
     block = 2
     constant_names = 'length_scale k_unknown'
-    constant_expressions = '1e-6 13.21'
+    constant_expressions = '1e-6 3.3'
     function = '(k_unknown*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
