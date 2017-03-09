@@ -57,14 +57,14 @@
   [./left] #Fix temperature on the left side
     type = DirichletBC
     variable = T
-    boundary = bottom
+    boundary = right
     value = 298
   [../]
   [./right_flux] #Set heat flux on the right side
     type = NeumannBC
     variable = T
-    boundary = top
-    value = 1.0e-10
+    boundary = left
+    value = 1.0e-8
   [../]
   [./Periodic]
     [./all]
@@ -93,7 +93,7 @@
     type = ParsedMaterial
     block = 0
     constant_names = 'length_scale k_anode'
-    constant_expressions = '1e-6 1.06'
+    constant_expressions = '1e-6 31'
     function = '(k_anode*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
@@ -113,7 +113,7 @@
     type = ParsedMaterial
     block = 2
     constant_names = 'length_scale k_cathode'
-    constant_expressions = '1e-6 2'
+    constant_expressions = '1e-6 28'
     function = '(k_cathode*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
@@ -131,7 +131,7 @@
       # on the right boundary
       type = ThermalConductivity
       variable = T
-      flux = 1.0e-10
+      flux = 1.0e-8
       length_scale = 1e-6
       T_hot = 298
       dx = 500

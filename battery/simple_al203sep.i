@@ -103,7 +103,7 @@
     type = ParsedMaterial
     block = 1
     constant_names = 'length_scale k_separator'
-    constant_expressions = '1e-6 0.19'
+    constant_expressions = '1e-6 0.44'
     function = '(k_separator*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity

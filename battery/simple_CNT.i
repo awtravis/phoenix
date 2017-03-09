@@ -93,7 +93,7 @@
     type = ParsedMaterial
     block = 0
     constant_names = 'length_scale k_anode'
-    constant_expressions = '1e-6 1.06'
+    constant_expressions = '1e-6 3.6'
     function = '(k_anode*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
@@ -103,7 +103,7 @@
     type = ParsedMaterial
     block = 1
     constant_names = 'length_scale k_separator'
-    constant_expressions = '1e-6 0.19'
+    constant_expressions = '1e-6 0.185'
     function = '(k_separator*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
