@@ -64,7 +64,7 @@
     type = NeumannBC
     variable = T
     boundary = top
-    value = 1.0e-10
+    value = 1.0e-8
   [../]
   [./Periodic]
     [./all]
@@ -122,9 +122,9 @@
     # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
     type = ParsedMaterial
     block = 3
-    constant_names = 'length_scale k_cathode'
+    constant_names = 'length_scale k_cathode_interface'
     constant_expressions = '1e-6 0.01'
-    function = '(k_cathode*length_scale)'
+    function = '(k_cathode_interface*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
   [../]
@@ -132,9 +132,9 @@
     # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
     type = ParsedMaterial
     block = 4
-    constant_names = 'length_scale k_cathode'
+    constant_names = 'length_scale k_anode_interface'
     constant_expressions = '1e-6 0.01'
-    function = '(k_cathode*length_scale)'
+    function = '(k_anode_interface*length_scale)'
     outputs = exodus
     f_name = thermal_conductivity
   [../]
@@ -151,7 +151,7 @@
       # on the right boundary
       type = ThermalConductivity
       variable = T
-      flux = 1.0e-10
+      flux = 1.0e-8
       length_scale = 1e-6
       T_hot = 298
       dx = 500
