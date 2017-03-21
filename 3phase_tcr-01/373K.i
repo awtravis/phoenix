@@ -11,24 +11,19 @@
     nodes = '0'
     new_boundary = 100
   [../]
-  [./al2o3_set]
-    type = SideSetsAroundSubdomain
-    block = 0
-    new_boundary = 50
-  [../]
 []
 
 
 [Variables]
   [./T]
-    initial_condition = 373
+    initial_condition = 473
   [../]
   [./Tx_AEH] #Temperature used for the x-component of the AEH solve
-    initial_condition = 373
+    initial_condition = 473
     scaling = 1.0e4 #Scales residual to improve convergence
   [../]
   [./Ty_AEH] #Temperature used for the y-component of the AEH solve
-    initial_condition = 373
+    initial_condition = 473
     scaling = 1.0e4  #Scales residual to improve convergence
   [../]
 []
@@ -63,7 +58,7 @@
     type = DirichletBC
     variable = T
     boundary = left
-    value = 373
+    value = 473
   [../]
   [./right_flux] #Set heat flux on the right side
     type = NeumannBC
@@ -80,24 +75,14 @@
   [./fix_x] #Fix Tx_AEH at a single point
     type = DirichletBC
     variable = Tx_AEH
-    value = 373
+    value = 473
     boundary = 100
   [../]
   [./fix_y] #Fix Ty_AEH at a single point
     type = DirichletBC
     variable = Ty_AEH
-    value = 373
+    value = 473
     boundary = 100
-  [../]
-[]
-
-[ThermalContact]
-  [./gap_conductivity]
-    type = GapHeatTransfer
-    variable = T
-    master = 2
-    slave = 3
-    gap_conductivity = 0.5
   [../]
 []
 
@@ -157,7 +142,7 @@
       variable = T
       flux = 5e-8
       length_scale = 1e-6
-      T_hot = 373
+      T_hot = 473
       dx = 2266
       boundary = right
     [../]
