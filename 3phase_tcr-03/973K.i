@@ -133,7 +133,7 @@
       flux = 5e-8
       length_scale = 1e-6
       T_hot = 973
-      dx = 2268
+      dx = 2260
       boundary = right
     [../]
     [./k_x_AEH] #Effective thermal conductivity in x-direction from AEH
