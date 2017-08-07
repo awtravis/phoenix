@@ -63,7 +63,7 @@
     type = NeumannBC
     variable = T
     boundary = right
-    value = 5e-8
+    value = 2e-8
   [../]
   [./Periodic]
     [./all]
@@ -129,7 +129,7 @@
       # on the right boundary
       type = ThermalConductivity
       variable = T
-      flux = 5e-8
+      flux = 2e-8
       length_scale = 1e-6
       T_hot = 773
       dx = 2260

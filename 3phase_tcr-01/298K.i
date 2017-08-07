@@ -111,6 +111,16 @@
     # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
     type = ParsedMaterial
     block = 2
+    constant_names = 'length_scale k_porosity'
+    constant_expressions = '1e-6 0.1'
+    function = '(k_porosity*length_scale)'
+    outputs = exodus
+    f_name = thermal_conductivity
+  [../]
+  [./thcond_4] #The equation defining the thermal conductivity is defined here, using two ifs
+    # The k in the bulk is k_b, in the precipitate k_p2, and across the interaface k_int
+    type = ParsedMaterial
+    block = 3
     constant_names = 'length_scale k_ysz'
     constant_expressions = '1e-6 1.75'
     function = '(k_ysz*length_scale)'
@@ -133,7 +143,7 @@
       flux = 5e-8
       length_scale = 1e-6
       T_hot = 298
-      dx = 2268
+      dx = 2266
       boundary = right
     [../]
     [./k_x_AEH] #Effective thermal conductivity in x-direction from AEH
