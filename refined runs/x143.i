@@ -181,10 +181,10 @@
   solve_type = 'NEWTON'
 
   l_max_its = 15
-  l_tol = 1.0e-4
+  l_tol = 1.0e-2
 
   nl_max_its = 10
-  nl_rel_tol = 1.0e-4
+  nl_rel_tol = 1.0e-2
 
   start_time = 0.0
   num_steps = 1000
@@ -196,10 +196,10 @@
   [../]
 
   [./Adaptivity]
-    initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
+    initial_adaptivity = 1 # Number of times mesh is adapted to initial condition
     refine_fraction = 0.7 # Fraction of high error that will be refined
     coarsen_fraction = 0.1 # Fraction of low error that will coarsened
-    max_h_level = 3 # Max number of refinements used, starting from initial mesh (before uniform refinement)
+    max_h_level = 1 # Max number of refinements used, starting from initial mesh (before uniform refinement)
   [../]
 []
 
