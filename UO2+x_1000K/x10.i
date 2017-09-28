@@ -124,7 +124,7 @@
     args = 'c'
     constant_names = 'T'
     constant_expressions = '1000'
-    function = '((c-((T-231.78)/4672.9))^2)'
+    function = '((c-((T-195.05)/5020.6))^2)'
     derivative_order = 2
     enable_jit = true
   [../]
