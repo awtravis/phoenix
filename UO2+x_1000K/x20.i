@@ -29,9 +29,9 @@
   [./etaIC]
     type = MultiSmoothCircleIC
     variable = eta
-    numbub = 100
+    numbub = 300
     int_width = 0.1
-    bubspac = 2.0
+    bubspac = 1.5
     radius = 0.5
     outvalue = 0 # UO2
     invalue = 1 #U4O9
@@ -41,8 +41,8 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 100
-    bubspac = 2.0
+    numbub = 300
+    bubspac = 1.5
     radius = 0.5
     outvalue = 0.20
     invalue = 0.20
@@ -193,6 +193,13 @@
   type = IterationAdaptiveDT
   dt = 1e-4 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
+  [../]
+
+  [./Adaptivity]
+    initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
+    refine_fraction = 0.7 # Fraction of high error that will be refined
+    coarsen_fraction = 0.1 # Fraction of low error that will coarsened
+    max_h_level = 3 # Max number of refinements used, starting from initial mesh (before uniform refinement)
   [../]
 []
 
