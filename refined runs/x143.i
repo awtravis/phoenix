@@ -29,7 +29,7 @@
   [./etaIC]
     type = MultiSmoothCircleIC
     variable = eta
-    numbub = 200
+    numbub = 300
     int_width = 0.1
     bubspac = 2.0
     radius = 0.5
@@ -41,11 +41,11 @@
     type = MultiSmoothCircleIC
     variable = c
     int_width = 0.1
-    numbub = 200
+    numbub = 300
     bubspac = 2.0
     radius = 0.5
-    outvalue = 0.20
-    invalue = 0.20
+    outvalue = 0.05
+    invalue = 0.05
     block = 0
   [../]
 []
@@ -108,7 +108,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L M kappa_c'
-    prop_values = '1 1 0.1'
+    prop_values = '1 1 0.5'
   [../]
   [./aniso]
     type = WidmanstattenMaterial
@@ -122,9 +122,7 @@
     block = 0
     f_name = Fa
     args = 'c'
-    constant_names = 'T'
-    constant_expressions = '913'
-    function = '(((c-((T-231.78)/4672.9))^2))'
+    function = '(c^2)'
     derivative_order = 2
     enable_jit = true
   [../]

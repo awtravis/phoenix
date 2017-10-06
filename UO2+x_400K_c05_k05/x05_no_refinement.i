@@ -44,8 +44,8 @@
     numbub = 300
     bubspac = 1.5
     radius = 0.5
-    outvalue = 0.15
-    invalue = 0.15
+    outvalue = 0.05
+    invalue = 0.05
     block = 0
   [../]
 []
@@ -108,7 +108,7 @@
     type = GenericConstantMaterial
     block = 0
     prop_names  = 'L M kappa_c'
-    prop_values = '1 1 0.05'
+    prop_values = '.1 .1 0.25'
   [../]
   [./aniso]
     type = WidmanstattenMaterial

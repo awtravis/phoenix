@@ -122,7 +122,7 @@
     type = DerivativeParsedMaterial
     f_name = Fa
     args = 'c'
-    function = '((c)^2)*10'
+    function = '((c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
@@ -130,7 +130,7 @@
     type = DerivativeParsedMaterial
     f_name = Fb
     args = 'c'
-    function = '((0.25-c)^2)*10'
+    function = '((0.25-c)^2)'
     derivative_order = 2
     enable_jit = true
   [../]
