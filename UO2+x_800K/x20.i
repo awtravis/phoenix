@@ -194,6 +194,13 @@
   dt = 1e-4 # Initial time step.
   optimal_iterations = 6 # Time step will adapt to maintain this number of nonlinear iterations
   [../]
+
+  [./Adaptivity]
+    initial_adaptivity = 3 # Number of times mesh is adapted to initial condition
+    refine_fraction = 0.7 # Fraction of high error that will be refined
+    coarsen_fraction = 0.1 # Fraction of low error that will coarsened
+    max_h_level = 3 # Max number of refinements used, starting from initial mesh (before uniform refinement)
+  [../]
 []
 
 [Outputs]
