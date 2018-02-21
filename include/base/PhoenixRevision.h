@@ -3,7 +3,7 @@
 #ifndef PHOENIX_REVISION_H
 #define PHOENIX_REVISION_H
 
-#define PHOENIX_REVISION "git commit 2b44fcf on 2018-02-07"
-#define PHOENIX_VERSION "2b44fcf"
+#define PHOENIX_REVISION "git commit 7c0c52c on 2018-02-21"
+#define PHOENIX_VERSION "7c0c52c"
 
 #endif // PHOENIX_REVISION_H
